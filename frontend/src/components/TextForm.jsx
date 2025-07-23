@@ -20,7 +20,7 @@ export default function TextForm() {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="w-full h-32 p-3 bg-black/20 rounded-lg border border-white/10 focus:outline-none"
+          className="w-full h-32 md:h-56 p-3 bg-black/20 rounded-lg border border-white/10 focus:outline-none"
           placeholder="Paste your text here..."
         />
         <button

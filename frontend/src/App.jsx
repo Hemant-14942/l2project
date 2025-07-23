@@ -9,6 +9,7 @@ import TextForm from './components/TextForm.jsx';
 import YouTubeForm from './components/YouTubeForm.jsx';
 import DocumentForm from './components/DocumentForm.jsx';
 import VoiceForm from './components/VoiceForm.jsx';
+import { AIVoiceInput } from './components/AIVoiceInput.jsx';
 
 export default function App() {
   return (
@@ -25,7 +26,7 @@ export default function App() {
           <Route path="/text" element={<TextForm />} />
           <Route path="/youtube" element={<YouTubeForm />} />
           <Route path="/document" element={<DocumentForm />} />
-          <Route path="/voice" element={<VoiceForm />} />
+          <Route path="/voice" element={<AIVoiceInput />} />
         </Routes>
       </Router>
     </div>
