@@ -5,6 +5,7 @@ import Features from '../components/Features.jsx';
 import { ParticleTextEffect } from '../components/ParticleTextEffect.jsx';
 import FAQ from '../components/FAQ.jsx';
 import EduVoiceHeroHero from '../components/EduVoiceHero.jsx';
+import SummaryPlayer from '../components/SummaryPlayer.jsx';
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <main className="flex-1 pt-23">
                 <EduVoiceHeroHero />
                 <Features />
+                <SummaryPlayer/>
                 <ParticleTextEffect />
                 <FAQ />
                 <Footer />

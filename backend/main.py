@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
 from ai_coach import EnhancedAICoach
@@ -7,6 +8,19 @@ from neuro_summarizer import NeuroSummarizer
 from file_processor import FileProcessor
 
 app = FastAPI()
+# ========== CORS Setup ==========
+origins = [
+    "http://localhost:5173",  # React frontend
+    "http://127.0.0.1:5173"   # Alternative localhost access
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # ========== Health check ==========
 @app.get("/")
