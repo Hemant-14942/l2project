@@ -10,6 +10,7 @@ import YouTubeForm from './components/YouTubeForm.jsx';
 import DocumentForm from './components/DocumentForm.jsx';
 import VoiceForm from './components/VoiceForm.jsx';
 import { AIVoiceInput } from './components/AIVoiceInput.jsx';
+import Chatbot from './components/ChatBot.jsx';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/youtube" element={<YouTubeForm />} />
           <Route path="/document" element={<DocumentForm />} />
           <Route path="/voice" element={<AIVoiceInput />} />
+          <Route  path='/chatbot' element={<Chatbot/>} />
         </Routes>
       </Router>
     </div>
