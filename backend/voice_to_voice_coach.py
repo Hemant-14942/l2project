@@ -1,4 +1,3 @@
-
 import asyncio
 import json
 import os
@@ -32,13 +31,15 @@ class VoiceToVoiceCoach:
         """Setup AI clients for voice processing"""
         try:
             # Initialize Whisper for speech recognition
+
             self.whisper_model = whisper.load_model("base")
+            # print("Whisper model loaded successfully", self.whisper_model)
 
             # Initialize OpenAI client for responses
             if AZURE_OPENAI_API_KEY and ENDPOINT_URL:
                 self.openai_client = openai.AzureOpenAI(
                     api_key=AZURE_OPENAI_API_KEY,
-                    api_version="2024-02-01",
+                    api_version="2025-01-01-preview",
                     azure_endpoint=ENDPOINT_URL
                 )
 
@@ -61,6 +62,7 @@ class VoiceToVoiceCoach:
 
             # Store in session state
             st.session_state.voice_session = session_data
+            print(f"Voice session started: {session_id}")
 
             return {
                 "status": "success",
@@ -120,6 +122,57 @@ class VoiceToVoiceCoach:
             "message_count": 0
         }
 
+    # def process_audio_input_by_file(self, audio_file_path: str) -> Dict:
+    #     """Process audio file from path and generate AI response"""
+    #     # print("control")  # Debug: print control flow
+    #     try:
+    #         # Transcribe audio using Whisper
+    #         # print("whisper_model:", self.whisper_model)  # Debug: print model status
+
+    #         if self.whisper_model:
+    #             # print(f"Transcribing audio file: {audio_file_path}")
+    #             print("control")  # Debug: print control flow
+    #             if not os.path.exists(audio_file_path):
+    #                 print("Audio file does not exist:", audio_file_path)
+    #                 return
+
+    #             result = self.whisper_model.transcribe(audio_file_path)
+    #             print("transcribing", result)  # Debug: print transcription result
+    #             user_text = result["text"].strip()
+    #             print(f"Transcribed text: {len(user_text)}")  ## Debug: print transcribed text
+    #         else:
+    #             user_text = "Audio transcription not available"
+
+    #         if not user_text:
+    #             return {
+    #                 "status": "error",
+    #                 "message": "No speech detected in audio"
+    #             }
+
+    #         # Generate AI response
+    #         ai_response = self._generate_ai_response(user_text)
+    #         print(f"AI response: {ai_response}")  ## Debug: print AI response
+
+    #         # Create audio response
+    #         audio_response = self._create_audio_response(ai_response)
+    #         print()
+
+    #         # Store conversation
+    #         self._store_conversation_exchange(user_text, ai_response)
+
+    #         return {
+    #             "status": "success",
+    #             "user_text": user_text,
+    #             "ai_response": ai_response,
+    #             "audio_response": audio_response
+    #         }
+
+    #     except Exception as e:
+    #         return {
+    #             "status": "error",
+    #             "message": f"Error processing audio: {str(e)}"
+    #         }
+
     def process_audio_input(self, audio_data: bytes) -> Dict:
         """Process audio input and generate AI response"""
         try:
@@ -127,6 +180,7 @@ class VoiceToVoiceCoach:
             if isinstance(audio_data, str):
                 # If it's base64 encoded
                 audio_bytes = base64.b64decode(audio_data)
+                # print("Decoded audio bytes length:", len(audio_bytes))
             else:
                 audio_bytes = audio_data
 
@@ -153,6 +207,7 @@ class VoiceToVoiceCoach:
 
             # Generate AI response
             ai_response = self._generate_ai_response(user_text)
+            print("ai_response")
 
             # Create audio response
             audio_response = self._create_audio_response(ai_response)
