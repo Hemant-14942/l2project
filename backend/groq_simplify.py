@@ -8,7 +8,7 @@ def simplify(text):
     try:
         client = openai.AzureOpenAI(
             api_key=AZURE_OPENAI_API_KEY,
-            api_version="2024-02-01",
+            api_version="2025-01-01-preview",
             azure_endpoint=ENDPOINT_URL
         )
 
