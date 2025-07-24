@@ -2,6 +2,46 @@ import { useState } from "react";
 import axios from "../api/axiosInstance";
 import { motion } from "framer-motion";
 
+// Helper function to format text with highlights and line breaks
+const formatSummary = (text) => {
+  if (!text) return "";
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "<strong class='text-purple-400'>$1</strong>") // **bold**
+    .replace(
+      /(\bConsent\b|\bProtection\b|\bIntimacy\b|\bReproduction\b)/gi,
+      "<span class='text-yellow-300 font-semibold'>$1</span>"
+    )
+    .replace(/\n/g, "<br />"); // convert new lines to <br>
+};
+
+// Component to render "visual" summary with a structured design
+const VisualCard = ({ data }) => {
+  if (!data) return null;
+
+  // Split into sections using ─ or ─────────────────
+  const sections = data.split(/─{5,}/g);
+
+  return (
+    <div className="grid gap-4">
+      {sections.map((section, idx) => (
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: idx * 0.1 }}
+          className="p-4 bg-gradient-to-br from-purple-900/30 to-purple-700/10 rounded-xl border border-white/10 shadow-md"
+        >
+          <div
+            dangerouslySetInnerHTML={{
+              __html: formatSummary(section.trim()),
+            }}
+          />
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
 export default function TextForm() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,9 +56,8 @@ export default function TextForm() {
     setSummary(null);
 
     try {
-      const res = await axios.post("/summarize", { text });
-      console.log(res.data);
-      setSummary(res.data); // API should return { basic, story, visual }
+      const res = await axios.post("/summarize/all", { content: text });
+      setSummary(res.data); // { basic, story, visual }
       setActiveTab("basic");
     } catch (err) {
       console.error(err);
@@ -35,7 +74,7 @@ export default function TextForm() {
 
   return (
     <div className="min-h-screen bg-[#0b0e1a] text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl space-y-6">
+      <div className="w-full max-w-2xl space-y-6 mt-34">
         {/* Text Form */}
         <form
           onSubmit={handleSummarize}
@@ -59,9 +98,7 @@ export default function TextForm() {
         {/* Loader */}
         {loading && (
           <div className="text-center mt-4">
-            <motion.div
-              className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin"
-            />
+            <motion.div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
             <p className="text-gray-400 mt-2">Generating summary...</p>
           </div>
         )}
@@ -92,9 +129,17 @@ export default function TextForm() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-gray-300"
+              className="text-gray-300 leading-relaxed space-y-2"
             >
-              {summary[activeTab]}
+              {activeTab === "visual" ? (
+                <VisualCard data={summary.visual} />
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: formatSummary(summary[activeTab]),
+                  }}
+                />
+              )}
             </motion.div>
           </div>
         )}

@@ -18,6 +18,12 @@ ENV/
 env.bak/
 *.env
 
+# Ignore temporary audio files
+*.webm
+
+# Ignore all JSON files
+*.json
+
 # IDEs & Editors
 .vscode/
 .idea/

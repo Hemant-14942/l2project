@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { UploadCloud } from "lucide-react";
+import axios from "../api/axiosInstance";
 
 export default function DocumentForm() {
   const [file, setFile] = useState(null);
@@ -15,22 +16,40 @@ export default function DocumentForm() {
     setLoading(true);
     setSummary(null);
 
-    // Simulating API Call
-    setTimeout(() => {
-      const mockResponse = {
-        basic: "This is a brief summary of the uploaded document.",
-        story: "This is a story-style summary with more narrative structure.",
-        visual: "This is a visual summary with bullet points and highlights.",
-      };
-      setSummary(mockResponse);
+    try {
+      // Prepare FormData for file upload
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // 1. Upload PDF and get transcript/text
+      const uploadRes = await axios.post("/upload/pdf", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Upload Response:", uploadRes.data);
+
+      // 2. Call summarization endpoint
+      const summarizeRes = await axios.post("/summarize/all", {
+        content: uploadRes.data.extracted_text, // assuming API returns text
+      });
+
+      console.log("Summaries:", summarizeRes.data);
+      setSummary(summarizeRes.data); // { basic, story, visual }
+      setActiveTab("basic");
+    } catch (error) {
+      console.error("Error processing document:", error);
+      setSummary({
+        basic: "Error generating summary. Please try again.",
+        story: "Error generating summary. Please try again.",
+        visual: "Error generating summary. Please try again.",
+      });
+    } finally {
       setLoading(false);
-      setActiveTab("basic"); // Default to basic summary
-    }, 2000);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#0b0e1a] text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl space-y-6">
+      <div className="w-full max-w-2xl space-y-6 mt-20">
         {/* Upload Form */}
         <motion.form
           onSubmit={handleSubmit}
@@ -82,7 +101,7 @@ export default function DocumentForm() {
             <motion.div
               className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin"
             />
-            <p className="text-gray-400 mt-2">Generating summary...</p>
+            <p className="text-gray-400 mt-2">Processing document...</p>
           </div>
         )}
 
@@ -112,7 +131,7 @@ export default function DocumentForm() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-gray-300"
+              className="text-gray-300 whitespace-pre-line"
             >
               {summary[activeTab]}
             </motion.div>
