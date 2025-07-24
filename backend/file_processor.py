@@ -6,7 +6,13 @@ import yt_dlp
 import requests
 from typing import Optional, Tuple
 import streamlit as st
+import pytesseract
+from PIL import Image
+from pdf2image import convert_from_bytes
 
+
+# Set tesseract path manually (adjust if installed elsewhere)
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 class FileProcessor:
     def __init__(self):
@@ -14,11 +20,14 @@ class FileProcessor:
         os.environ["ELEVENLABS_API_KEY"] = "sk_38b2b4eb5f4c1e4b72703f499de6b0eaa475c72beb02e034"
         self.elevenlabs_api_key = os.environ["ELEVENLABS_API_KEY"]
 
+
+
     def extract_pdf_text(self, pdf_file) -> str:
         try:
             pdf_bytes = pdf_file.read()
             pdf_file.seek(0)
 
+            # First try with PyMuPDF
             doc = fitz.open(stream=pdf_bytes, filetype="pdf")
             text = ""
             for page in doc:
@@ -28,12 +37,24 @@ class FileProcessor:
             if text.strip():
                 return text
 
+            # Second try with PyPDF2
+            pdf_file.seek(0)
             reader = PyPDF2.PdfReader(pdf_file)
-            text = ""
             for page in reader.pages:
-                text += page.extract_text()
+                extracted = page.extract_text()
+                if extracted:
+                    text += extracted
 
-            return text
+            if text.strip():
+                return text
+
+            # 🔁 Fallback: OCR using pdf2image + pytesseract
+            st.info(" Using OCR to extract text from scanned PDF...")
+            images = convert_from_bytes(pdf_bytes)
+            for img in images:
+                text += pytesseract.image_to_string(img)
+
+            return text.strip()
 
         except Exception as e:
             st.error(f"Error extracting PDF text: {str(e)}")
