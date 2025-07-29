@@ -317,7 +317,7 @@ export default function EduVoiceHero({ title = "eduvoice.ai" }) {
                 </span>
               ))}
             </h1> */}
-            <div className="flex justify-start items-center  mb-20  mt-20">
+            <div className="flex justify-start items-center  mb-20  ">
               <div className="flex flex-col gap-7">
                 {/* Subtitle */}
                 <motion.p

@@ -62,6 +62,7 @@ class FileProcessor:
 
     def extract_youtube_transcript(self, url: str) -> Tuple[str, str]:
         try:
+            print("Downloading audio...")
             # Download using yt-dlp
             ydl_opts = {
                 'format': 'bestaudio/best',
@@ -76,7 +77,9 @@ class FileProcessor:
                 }],
             }
 
+
             try:
+                print("inside try block of extract_youtube_transcript function")
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=True)
                     title = info.get('title', 'Unknown Video')
@@ -87,14 +90,17 @@ class FileProcessor:
                     st.error(f"❌ Download error: {str(e)}")
                 return "Error", ""
 
+            # print("Downloaded audio successfully. Now transcribing...")
             # Find the downloaded MP3
             audio_file = next((f for f in os.listdir('.') if f.startswith('temp_audio') and f.endswith('.mp3')), None)
-
+            print(f"Audio file: {audio_file}")
             if not audio_file or not os.path.exists(audio_file):
                 return title, "Audio file not found or failed to download."
-
+            
+            print("Transcribing audio...")
             # Transcribe using ElevenLabs API
             transcript = self.transcribe_with_elevenlabs(audio_file)
+            print(f"Transcript: {transcript}")
 
             # Cleanup
             os.remove(audio_file)
@@ -104,6 +110,27 @@ class FileProcessor:
         except Exception as e:
             st.error(f"Error processing YouTube video: {str(e)}")
             return "Error", ""
+    def extract_uploaded_audio_transcript(self, audio_file_path: str) -> Tuple[str, dict]:
+        try:
+            print("inside extract_uploaded_audio_transcript function")
+            print(f"Transcribing audio: {audio_file_path}")
+            if not os.path.exists(audio_file_path):
+                return "Error", {
+                    "basic": "File not found.",
+                    "story": "File not found.",
+                    "visual": "File not found.",
+                }
+
+            transcript = self.transcribe_with_elevenlabs(audio_file_path)
+
+            return transcript
+
+        except Exception as e:
+            return "Error", {
+                "basic": f"Error: {str(e)}",
+                "story": f"Error: {str(e)}",
+                "visual": f"Error: {str(e)}",
+            }
 
     def transcribe_with_elevenlabs(self, audio_path: str) -> str:
         try:

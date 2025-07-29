@@ -1,6 +1,7 @@
 import { Mic, Upload, Youtube, Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+
 export default function InputPage() {
   const navigate = useNavigate();
 
@@ -9,7 +10,8 @@ export default function InputPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0e1a] text-white flex flex-col items-center justify-center p-6 mt-17 md:mt-5">
+    <div className=" relative  text-white flex flex-col items-center justify-center p-6 pt-23 ">
+      {/* <SplashCursor/> */}
       <h1 className="text-4xl font-bold mb-8 text-center">
         Choose Your Input Type
       </h1>

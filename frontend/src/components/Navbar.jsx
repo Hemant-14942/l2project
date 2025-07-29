@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
+  const MotionLink = motion(Link);
 
   return (
     <div className="flex justify-center w-full mt-7  bg-transparent">
@@ -17,47 +20,26 @@ const Navbar = () => {
           whileHover={{ rotate: 5 }}
           transition={{ duration: 0.3 }}
         >
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="16" cy="16" r="16" fill="url(#grad)" />
-            <defs>
-              <linearGradient
-                id="grad"
-                x1="0"
-                y1="0"
-                x2="32"
-                y2="32"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#6366F1" />
-                <stop offset="1" stopColor="#A855F7" />
-              </linearGradient>
-            </defs>
-          </svg>
+          <img src="/spheric-vortex-of-pastel-light-loader.gif" alt="" className="w-10" />
           <span className="ml-3 font-bold text-white text-lg">EduVoice.ai</span>
         </motion.div>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {["Home", "Features", "Pricing", "FAQ"].map((item) => (
-            <motion.a
-              key={item}
-              href="#"
-              className="text-sm text-slate-200 hover:text-white transition-colors font-medium"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              {item}
-            </motion.a>
-          ))}
-        </nav>
+       <nav className="hidden md:flex items-center space-x-8">
+  {["Home", "Features", "Pricing", "FAQ","MotivAI"].map((item) => (
+    <MotionLink
+      key={item}
+      to={`/${item.toLowerCase()}`}
+      className="text-sm text-slate-200 hover:text-white transition-colors font-medium"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
+      whileHover={{ scale: 1.05 }}
+    >
+      {item}
+    </MotionLink>
+  ))}
+</nav>
 
         {/* Desktop CTA */}
         <motion.div
@@ -107,10 +89,10 @@ const Navbar = () => {
             </motion.button>
 
             <div className="flex flex-col space-y-6">
-              {["Home", "Features", "Pricing", "FAQ"].map((item, i) => (
-                <motion.a
+              {["Home", "Features", "Pricing", "FAQ", "MotivAI"].map((item, i) => (
+                <MotionLink
                   key={item}
-                  href="#"
+                   to={`/${item.toLowerCase()}`}
                   className="text-base text-slate-200 font-medium"
                   onClick={toggleMenu}
                   initial={{ opacity: 0, x: 20 }}
@@ -119,7 +101,7 @@ const Navbar = () => {
                   exit={{ opacity: 0, x: 20 }}
                 >
                   {item}
-                </motion.a>
+                </MotionLink>
               ))}
 
               <motion.div

@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
+import shutil
 
 # Import our custom modules
 import sys
@@ -110,15 +111,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware
+# ========== CORS Setup ==========
+origins = [
+    "http://localhost:5173",  # React frontend
+    "http://127.0.0.1:5173"   # Alternative localhost access
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure for production
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
-
 # Static files
 os.makedirs("audio_cache", exist_ok=True)
 os.makedirs("uploads", exist_ok=True)
@@ -291,8 +296,10 @@ def summarize_visual(input: SummaryInput):
 
 @app.post("/api/summarize/all")
 def summarize_all(input: SummaryInput):
+    print("inside summarize_all")
     """Generate all summary types"""
     try:
+        print("inside try")
         summaries = summarizer.get_all_summaries(input.content)
         return summaries
     except Exception as e:
@@ -310,12 +317,37 @@ async def extract_pdf_text(file: UploadFile = File(...)):
 
 @app.post("/api/youtube/transcript")
 def youtube_transcript(url: str = Form(...)):
+    print("inside youtube_transcript")
     """Extract transcript from YouTube video"""
     try:
+        print(f"Extracting transcript from: {url}")
         title, transcript = file_processor.extract_youtube_transcript(url)
         return {"title": title, "transcript": transcript}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/upload/audio")
+async def upload_audio(file: UploadFile = File(...)):
+    if not file:
+        raise HTTPException(status_code=400, detail="No file uploaded")
+    if not file.content_type.startswith("audio/"):
+        raise HTTPException(status_code=415, detail="Unsupported media type")
+    
+    print(f"Received file: {file.filename}")
+    print(f"Content type: {file.content_type}")
+
+    print("inside upload_audio")
+    with open(f"temp_{file.filename}", "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    audio_path = f"temp_{file.filename}"
+    print(f"Saving audio to: {audio_path}")
+    print("calling extract_uploaded_audio_transcript")
+    transcript = file_processor.extract_uploaded_audio_transcript(audio_path)
+
+    os.remove(audio_path)  # optional cleanup
+    # return {"message": "File received", "filename": file.filename}
+    return {"transcript": transcript}
 
 @app.post("/api/save/content")
 def save_content(

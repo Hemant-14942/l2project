@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import PurpleParticleBackground  from "../backgroundAnimations/PurpleParticleBackground";
+
 
 class Particle {
   constructor() {
@@ -135,14 +137,15 @@ const DEFAULT_WORDS = [
   "AI Mentor"
 ];
 
-
 export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
+  const sectionRef = useRef(null);
   const canvasRef = useRef(null);
   const animationRef = useRef();
   const particlesRef = useRef([]);
   const frameCountRef = useRef(0);
   const wordIndexRef = useRef(0);
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false, isRightClick: false });
+  const [isInView, setIsInView] = useState(false);
 
   const pixelSteps = 6;
   const drawAsPoints = true;
@@ -150,14 +153,12 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
   const generateRandomPos = (x, y, mag) => {
     const randomX = Math.random() * 1000;
     const randomY = Math.random() * 500;
-
     const direction = { x: randomX - x, y: randomY - y };
     const magnitude = Math.sqrt(direction.x ** 2 + direction.y ** 2);
     if (magnitude > 0) {
       direction.x = (direction.x / magnitude) * mag;
       direction.y = (direction.y / magnitude) * mag;
     }
-
     return { x: x + direction.x, y: y + direction.y };
   };
 
@@ -197,7 +198,6 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
 
     for (const coordIndex of coordsIndexes) {
       const alpha = pixels[coordIndex + 3];
-
       if (alpha > 0) {
         const x = (coordIndex / 4) % canvas.width;
         const y = Math.floor(coordIndex / 4 / canvas.width);
@@ -254,10 +254,10 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
       particle.move();
       particle.draw(ctx, drawAsPoints);
 
-      if (particle.isKilled) {
-        if (particle.pos.x < 0 || particle.pos.x > canvas.width || particle.pos.y < 0 || particle.pos.y > canvas.height) {
-          particles.splice(i, 1);
-        }
+      if (particle.isKilled &&
+        (particle.pos.x < 0 || particle.pos.x > canvas.width || particle.pos.y < 0 || particle.pos.y > canvas.height)
+      ) {
+        particles.splice(i, 1);
       }
     }
 
@@ -280,6 +280,16 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
   };
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => sectionRef.current && observer.unobserve(sectionRef.current);
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -287,7 +297,6 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
     canvas.height = 500;
 
     nextWord(words[0], canvas);
-    animate();
 
     const handleMouseDown = (e) => {
       mouseRef.current.isPressed = true;
@@ -324,13 +333,22 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (isInView) animationRef.current = requestAnimationFrame(animate);
+    else if (animationRef.current) cancelAnimationFrame(animationRef.current);
+  }, [isInView]);
+
   return (
-    <div className="flex flex-col  items-center justify-center min-h-screen bg-slate-900/80 p-4">
-      <div>
-        <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-6 text-center">
-          Why Choose EduVoice.ai?
-        </h1>
-      </div>
+    <div
+      ref={sectionRef}
+      className="flex flex-col items-center justify-center min-h-screen bg-slate-900/80 p-4 relative"
+    >
+      {/* <PurpleParticleBackground/>
+       */}
+
+      <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-6 text-center">
+        Why Choose EduVoice.ai?
+      </h1>
       <canvas
         ref={canvasRef}
         className="border border-slate-600 shadow-fuchsia-100 rounded-lg shadow-xl w-[70%] h-1/2"

@@ -1,64 +1,27 @@
+// TextForm.jsx
 import { useState } from "react";
 import axios from "../api/axiosInstance";
-import { motion } from "framer-motion";
-
-// Helper function to format text with highlights and line breaks
-const formatSummary = (text) => {
-  if (!text) return "";
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong class='text-purple-400'>$1</strong>") // **bold**
-    .replace(
-      /(\bConsent\b|\bProtection\b|\bIntimacy\b|\bReproduction\b)/gi,
-      "<span class='text-yellow-300 font-semibold'>$1</span>"
-    )
-    .replace(/\n/g, "<br />"); // convert new lines to <br>
-};
-
-// Component to render "visual" summary with a structured design
-const VisualCard = ({ data }) => {
-  if (!data) return null;
-
-  // Split into sections using ─ or ─────────────────
-  const sections = data.split(/─{5,}/g);
-
-  return (
-    <div className="grid gap-4">
-      {sections.map((section, idx) => (
-        <motion.div
-          key={idx}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.1 }}
-          className="p-4 bg-gradient-to-br from-purple-900/30 to-purple-700/10 rounded-xl border border-white/10 shadow-md"
-        >
-          <div
-            dangerouslySetInnerHTML={{
-              __html: formatSummary(section.trim()),
-            }}
-          />
-        </motion.div>
-      ))}
-    </div>
-  );
-};
+import Summary from "./Summary";
 
 export default function TextForm() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const [summary, setSummary] = useState(null);
   const [activeTab, setActiveTab] = useState("basic");
 
   const handleSummarize = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-
     setLoading(true);
     setSummary(null);
-
     try {
-      const res = await axios.post("/summarize/all", { content: text });
-      setSummary(res.data); // { basic, story, visual }
+      const res = await axios.post("/api/summarize/all", { content: text });
+      console.log(res.data);
+      
+      setSummary(res.data);
       setActiveTab("basic");
+      setShowSummary(true);
     } catch (err) {
       console.error(err);
       setSummary({
@@ -66,84 +29,63 @@ export default function TextForm() {
         story: "Error generating summary. Please try again.",
         visual: "Error generating summary. Please try again.",
       });
+      setShowSummary(true);
     } finally {
       setLoading(false);
-      setText("");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0e1a] text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl space-y-6 mt-34">
-        {/* Text Form */}
-        <form
-          onSubmit={handleSummarize}
-          className="bg-white/5 p-6 rounded-2xl w-full space-y-4"
-        >
-          <h2 className="text-2xl font-bold mb-4">Enter Text</h2>
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            className="w-full h-32 md:h-56 p-3 bg-black/20 rounded-lg border border-white/10 focus:outline-none"
-            placeholder="Paste your text here..."
-          />
-          <button
-            type="submit"
-            className="w-full py-2 rounded-xl bg-gradient-to-r from-purple-500 to-purple-700 hover:opacity-90 transition-all"
-          >
-            Summarize
-          </button>
-        </form>
+    <div className="min-h-screen bg-[#0b0e1a] text-white px-4 py-10 flex flex-col items-center">
+      {!showSummary && (
+        <div className="w-full max-w-4xl bg-[#1b1033] rounded-2xl p-8 shadow-lg">
+          <h1 className="text-3xl font-bold text-center mb-2 text-purple-400">
+            Text Summarizer
+          </h1>
+          <p className="text-center text-sm text-gray-400 mb-6">
+            Paste your content below
+          </p>
 
-        {/* Loader */}
-        {loading && (
-          <div className="text-center mt-4">
-            <motion.div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
-            <p className="text-gray-400 mt-2">Generating summary...</p>
-          </div>
-        )}
+          <form onSubmit={handleSummarize} className="space-y-4">
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="w-full h-52 p-4 bg-[#2a194f] text-white text-sm rounded-lg border border-white/10 focus:outline-none resize-none"
+              placeholder="Enter your text here..."
+            ></textarea>
 
-        {/* Summary Tabs */}
-        {summary && !loading && (
-          <div className="bg-white/5 rounded-2xl p-4 space-y-4 shadow-lg border border-white/10">
-            {/* Tabs */}
-            <div className="flex justify-center gap-3">
-              {["basic", "story", "visual"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 rounded-lg transition-all ${
-                    activeTab === tab
-                      ? "bg-purple-600 text-white"
-                      : "bg-purple-900/30 text-gray-300 hover:bg-purple-800/50"
-                  }`}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
-            </div>
-
-            {/* Summary Content */}
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-gray-300 leading-relaxed space-y-2"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-purple-600 to-purple-800 hover:opacity-90 transition disabled:opacity-50"
             >
-              {activeTab === "visual" ? (
-                <VisualCard data={summary.visual} />
-              ) : (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: formatSummary(summary[activeTab]),
-                  }}
-                />
-              )}
-            </motion.div>
+              {loading ? "Generating Summary..." : "Generate Summary"}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {loading && (
+        <div className="mt-10 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
+            <p className="text-sm text-gray-400">Generating your summary...</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {summary && !loading && showSummary && (
+        <Summary
+          summary={summary}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          resetForm={() => {
+            setText("");
+            setSummary(null);
+            setShowSummary(false);
+          }}
+        />
+      )}
     </div>
   );
 }

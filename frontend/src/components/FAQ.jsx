@@ -26,11 +26,17 @@ function FAQItem({q,a}) {
 export default function FAQ() {
   return (
     <section className="py-20 bg-gradient-to-b from-[#0B0F19] to-[#0D111F]" id="faq">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4 ">
         <h2 className="text-3xl font-bold text-gradient text-center mb-12">FAQ</h2>
+        {/* <div className="flex w-full "> */}
+          {/* <div>
+            <img src="/3d-hygge-laptop-on-abstract-geometric-shapes.gif" alt="" />
+          </div> */}
+
         <div className="space-y-4">
           {faqs.map(f => <FAQItem key={f.q} {...f} />)}
         </div>
+        {/* </div> */}
       </div>
     </section>
   );
