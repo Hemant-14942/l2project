@@ -9,18 +9,30 @@ import base64
 import tempfile
 from datetime import datetime
 from typing import Optional, Dict, List
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, WebSocket
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, WebSocket,Request,Cookie,Depends,Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse,RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
+from dotenv import load_dotenv
+from urllib.parse import urlencode
 import shutil
+import requests
+
+from jwt_utils.auth import create_access_token, decode_token
 
 # Import our custom modules
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+load_dotenv()
+
+# Load environment variables
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN")
 
 try:
     from ai_coach import EnhancedAICoach
@@ -137,6 +149,7 @@ summarizer = NeuroSummarizer()
 # Initialize optional components with fallbacks
 try:
     tts_engine = NeuroTTSEngine()
+    print("✅ TTS Engine: Initialized successfully")
 except:
     class DummyTTSEngine:
         def create_summary_audio(self, summaries, mode): return None
@@ -161,6 +174,29 @@ def get_user_components(user_id: str):
         'session_manager': SessionManager(user_id),
         'voice_coach': VoiceToVoiceCoach(user_id)
     }
+def get_current_user(access_token: str = Cookie(None)):
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    print(f"access_token: {access_token}")
+
+    
+    user = decode_token(access_token)
+    if not user:
+        raise HTTPException(status_code=403, detail="Invalid token")
+    
+    return user
+
+@app.get("/protected")
+def protected_route(user: dict = Depends(get_current_user)):
+    return {
+        "message": f"Hello {user['name']}, you're authenticated!",
+        "user": user  # ✅ Include this!
+    }
+@app.post("/logout")
+def logout(response: Response):
+    response.delete_cookie("access_token")
+    return {"message": "Logged out"}
+
 
 # Pydantic models
 class UserMessage(BaseModel):
@@ -221,6 +257,70 @@ def health_check():
         }
     }
 
+# ------------------google auth routes --------------------------
+# Step 1: Redirect user to Google login
+@app.get("/auth/google")
+def login_via_google():
+    print("inside login_via_google")
+    params = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "response_type": "code",
+        "scope": "openid email profile",
+        "redirect_uri": REDIRECT_URI,
+        "access_type": "offline",
+        "prompt": "consent",
+    }
+    url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
+    # print("redirecting to google---->", url)
+    
+    return RedirectResponse(url)
+
+# Step 2: Google redirects here with ?code=
+@app.get("/auth/google/callback")
+def google_callback(request: Request, response: Response):
+    print("inside google_callback")
+    code = request.query_params.get("code")
+    # print("code", code)
+    if not code:
+        raise HTTPException(status_code=400, detail="No code provided")
+
+    # Exchange code for token
+    token_res = requests.post("https://oauth2.googleapis.com/token", data={
+        "code": code,
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "redirect_uri": REDIRECT_URI,
+        "grant_type": "authorization_code"
+    })
+    # print("token_res", token_res)
+
+    tokens = token_res.json()
+    access_token = tokens.get("access_token")
+    print("userinfo k liye google ki api clla krne ja rah hu")
+    # Get user info
+    userinfo = requests.get("https://www.googleapis.com/oauth2/v2/userinfo", headers={
+        "Authorization": f"Bearer {access_token}"
+    }).json()
+    print("userinfo", userinfo)
+    jwt_token = create_access_token({
+        "email": userinfo["email"],
+        "name": userinfo["name"]
+    })
+
+    # Set cookie (secure, HttpOnly)
+    response = RedirectResponse(url="http://localhost:5173/")  # or wherever
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=False,  # ❌ should be False only if using HTTP
+        samesite="Lax",  # Lax is okay if redirecting
+        max_age=3600
+    )
+
+    print("response", response)
+    return response
+    
 # ============= AI COACH ENDPOINTS =============
 @app.post("/api/chat")
 def chat_with_coach(user_input: UserMessage):
@@ -666,5 +766,12 @@ def get_config():
         "difficulty_levels": ["Easy", "Medium", "Hard"]
     }
 
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0", port=8001)
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(
+        "main:app",
+        host=os.getenv("UVICORN_HOST", "127.0.0.1"),
+        port=int(os.getenv("UVICORN_PORT", 8000)),
+        reload=True
+    )

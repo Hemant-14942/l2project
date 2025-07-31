@@ -100,7 +100,9 @@ export default function MotivAI() {
             </div>
             <div>
               <h2 className="text-white font-bold text-lg">MotivAI Coach</h2>
-              <p className="text-indigo-200 text-sm">Your Personal Academic Companion</p>
+              <p className="text-indigo-200 text-sm">
+                Your Personal Academic Companion
+              </p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -118,9 +120,9 @@ export default function MotivAI() {
                 <span>{sessionStats.studyTime}min session</span>
               </div>
             </div>
-            <button 
-              // onClick={clearMessages} 
-              onClick={() => navigate(-1)} 
+            <button
+              // onClick={clearMessages}
+              onClick={() => navigate(-1)}
               className="text-indigo-200 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10"
             >
               <X className="h-4 w-4" />
@@ -134,25 +136,40 @@ export default function MotivAI() {
         {/* Chat Messages */}
         <div className="flex-1 p-6 overflow-y-auto bg-slate-900/50">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
               <div className="relative">
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
+                {/* <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
                   <Sparkles className="h-10 w-10 text-white" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
                   <Trophy className="h-4 w-4 text-yellow-800" />
-                </div>
+                </div> */}
+                <img
+                  src="/juicy-woman-in-workflow-multitasking.gif"
+                  alt=""
+                  className="w-50 h-50"
+                />
               </div>
               <div>
-                <h3 className="text-white text-2xl font-bold mb-2">Welcome to MotivAI! 🚀</h3>
+                <div className="flex items-center justify-center space-x-2">
+                  <h3 className="text-white text-2xl font-bold ">
+                    Welcome to MotivAI! 
+                  </h3>
+                  <img
+                    src="/juicy-rocket.gif"
+                    className="w-5"
+                    alt=""
+                  />
+                </div>
                 <p className="text-slate-300 text-sm max-w-md leading-relaxed">
-                  I'm here to help you excel in your studies! Ask me doubts, get study tips, 
-                  set goals, or just chat when you need motivation. Your success is my mission!
+                  I'm here to help you excel in your studies! Ask me doubts, get
+                  study tips, set goals, or just chat when you need motivation.
+                  Your success is my mission!
                 </p>
               </div>
-              
+
               {/* Quick Action Buttons */}
-              <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="grid grid-cols-2 gap-3 ">
                 {quickActions.map((action, index) => (
                   <button
                     key={index}
@@ -168,8 +185,17 @@ export default function MotivAI() {
           ) : (
             <div className="space-y-4">
               {messages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[75%] flex items-start space-x-2 ${msg.isUser ? "flex-row-reverse space-x-reverse" : ""}`}>
+                <div
+                  key={i}
+                  className={`flex ${
+                    msg.isUser ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`max-w-[75%] flex items-start space-x-2 ${
+                      msg.isUser ? "flex-row-reverse space-x-reverse" : ""
+                    }`}
+                  >
                     {!msg.isUser && (
                       <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                         <Sparkles className="h-4 w-4 text-white" />
@@ -184,7 +210,10 @@ export default function MotivAI() {
                     >
                       <p className="text-sm leading-relaxed">{msg.text}</p>
                       <p className="text-xs opacity-60 mt-2">
-                        {msg.timestamp?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {msg.timestamp?.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                   </div>
@@ -215,8 +244,8 @@ export default function MotivAI() {
       {/* Input Area */}
       <div
         className={`p-6 border-t ${
-          isFocused 
-            ? "border-indigo-400/70 bg-gradient-to-r from-slate-800/90 to-indigo-900/30" 
+          isFocused
+            ? "border-indigo-400/70 bg-gradient-to-r from-slate-800/90 to-indigo-900/30"
             : "border-slate-600/30 bg-slate-800/50"
         } transition-all duration-300 backdrop-blur-sm`}
       >
@@ -226,7 +255,7 @@ export default function MotivAI() {
             onChange={(e) => setInput(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
+            onKeyPress={(e) => e.key === "Enter" && handleSubmit(e)}
             placeholder="Ask me anything... doubts, study tips, motivation! 🌟"
             className="w-full bg-slate-700/50 border border-slate-500/50 rounded-2xl py-4 pl-6 pr-14 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/70 focus:border-indigo-400/70 transition-all duration-200 text-sm"
           />
