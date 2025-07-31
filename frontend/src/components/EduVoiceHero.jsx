@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "./../components/Button.jsx"; // Make sure this exists (JSX)
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 // ─────────────────────────────────────────────────────────────
 // Geometric Grid Paths
 // ─────────────────────────────────────────────────────────────
@@ -239,6 +240,9 @@ function SpiralPaths() {
 // Hero Component (EduVoiceHero)
 // ─────────────────────────────────────────────────────────────
 export default function EduVoiceHero({ title = "eduvoice.ai" }) {
+  const { user, isLoggedIn, logout } = useAuth();
+  console.log(user);
+  
   const [currentPattern, setCurrentPattern] = useState(0);
   const patterns = ["neural", "flow", "geometric", "spiral"];
   const words = title.split(" ");
@@ -329,7 +333,22 @@ export default function EduVoiceHero({ title = "eduvoice.ai" }) {
                   transition={{ delay: 0.5, duration: 1 }}
                 >
                   EduVoice.AI
+
                 </motion.p>
+                {
+                  isLoggedIn ? (
+                    <motion.p
+                      className="mx-auto max-w-2xl text-3xl font-light tracking-wide text-muted-foreground dark:text-muted-foreground/80 md:text-2xl "
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1, duration: 1 }}
+                    >
+                      Welcome, {user.name}
+                    </motion.p>
+                  ) : (
+                   ""
+                  )
+                }
 
                 <motion.p
                   className="mx-auto max-w-2xl text-xl font-light tracking-wide text-muted-foreground dark:text-muted-foreground/80 md:text-2xl "

@@ -37,7 +37,7 @@ export default function TextForm() {
 
   return (
     <div className="min-h-screen bg-[#0b0e1a] text-white px-4 py-10 flex flex-col items-center">
-      {!showSummary && (
+      {!showSummary && !loading && (
         <div className="w-full max-w-4xl bg-[#1b1033] rounded-2xl p-8 shadow-lg">
           <h1 className="text-3xl font-bold text-center mb-2 text-purple-400">
             Text Summarizer
@@ -66,13 +66,25 @@ export default function TextForm() {
       )}
 
       {loading && (
-        <div className="mt-10 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
-            <p className="text-sm text-gray-400">Generating your summary...</p>
-          </div>
-        </div>
-      )}
+  <div className="mt-20 flex flex-col items-center justify-center gap-6 animate-fade-in">
+    {/* Glowing animated container */}
+    <div className="relative w-52 h-52 rounded-full overflow-hidden bg-amber-100 shadow-[0_0_60px_10px_rgba(255,191,0,0.3)] animate-bounce-slow flex justify-center items-center">
+      <img
+        src="/monkeyfunny.gif"
+        alt="Loading monkey"
+        className="w-full h-full object-cover p-4 rounded-full"
+      />
+    </div>
+
+    {/* Spinner & message */}
+    <div className="text-center space-y-3">
+      <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
+      <p className="text-md text-gray-400 font-light tracking-wide">
+        Monkey is thinking hard... <br /> Please hold tight while we generate your summary.
+      </p>
+    </div>
+  </div>
+)}
 
       {summary && !loading && showSummary && (
         <Summary

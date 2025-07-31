@@ -20,9 +20,13 @@ env.bak/
 
 # Ignore temporary audio files
 *.webm
+*.mp3
+*.mp4
+*.wav
 
 # Ignore all JSON files
 *.json
+*.txt
 
 # IDEs & Editors
 .vscode/
