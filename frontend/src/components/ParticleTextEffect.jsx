@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import PurpleParticleBackground  from "../backgroundAnimations/PurpleParticleBackground";
+// import PurpleParticleBackground  from "../backgroundAnimations/PurpleParticleBackground";
 
 
 class Particle {
@@ -343,8 +343,6 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }) {
       ref={sectionRef}
       className="flex flex-col items-center justify-center min-h-screen bg-slate-900/80 p-4 relative"
     >
-      {/* <PurpleParticleBackground/>
-       */}
 
       <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-6 text-center">
         Why Choose EduVoice.ai?

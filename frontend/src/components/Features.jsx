@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FileInput, BookOpen, Layers, Brain } from "lucide-react";
-import PurpleParticleBackground from "../backgroundAnimations/PurpleParticleBackground";
+
 
 const features = [
   {
@@ -41,7 +41,6 @@ const cardVariants = {
 const Features = () => {
   return (
     <section className="py-20 bg-gradient-to-b from-[#0B0F19] to-[#0D111F]">
-      <PurpleParticleBackground/>
       <div className="max-w-7xl mx-auto px-6">
         {/* Heading */}
         <motion.div
