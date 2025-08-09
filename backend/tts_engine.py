@@ -41,6 +41,7 @@ class NeuroTTSEngine:
         return self.text_to_speech(text, f"summary_{summary_type}")
 
     def text_to_speech(self, text: str, filename: str = "output") -> Optional[str]:
+        print("inside text_to_speech")
         """Convert text to speech and return audio file path"""
         try:
             # Create audio directory if it doesn't exist
@@ -51,11 +52,14 @@ class NeuroTTSEngine:
                 return self._create_gtts_audio(text, filename)
 
             # Use pyttsx3 for local TTS
+            print("creating audio path")
             audio_path = f"audio/{filename}.wav"
+            print("saving to file")
             self.tts_engine.save_to_file(text, audio_path)
             self.tts_engine.runAndWait()
 
-            if os.path.exists(audio_path):
+            if os.path.exists(audio_path) and os.path.getsize(audio_path) > 0:
+                print(f"Audio saved to {audio_path}")
                 return audio_path
             else:
                 return self._create_gtts_audio(text, filename)
@@ -65,10 +69,14 @@ class NeuroTTSEngine:
             return self._create_gtts_audio(text, filename)
 
     def _create_gtts_audio(self, text: str, filename: str) -> Optional[str]:
+        print("inside _create_gtts_audio")
         """Create audio using Google TTS as fallback"""
         try:
-            tts = gTTS(text=text, lang='en', slow=True)  # Slower for neuro-friendly
+            tts = gTTS(text=text, lang='en', slow=True) 
+            print("saving to file") 
+            # Slower for neuro-friendly
             audio_path = f"audio/{filename}.mp3"
+            print("file saved to {audio_path}")
             tts.save(audio_path)
             return audio_path
         except Exception as e:

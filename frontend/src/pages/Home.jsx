@@ -6,6 +6,7 @@ import { ParticleTextEffect } from '../components/ParticleTextEffect.jsx';
 import FAQ from '../components/FAQ.jsx';
 import EduVoiceHeroHero from '../components/EduVoiceHero.jsx';
 import FloatingAIWidget from '../components/FloatingAIWidget.jsx';
+import Quiz from '../components/Quiz.jsx';
 
 export default function Home() {
   return (

@@ -11,12 +11,17 @@ import DocumentForm from './components/DocumentForm.jsx';
 import AIVoiceInput from './components/AIVoiceInput.jsx';
 import Chatbot from './components/ChatBot.jsx';
 import MotivAI from './pages/MotivAI.jsx';
+import { useAuth } from './context/AuthContext.jsx';
+import LoginSignupPage from './components/LoginSignupPage.jsx';
 
 function AppContent() {
   const location = useLocation();
-  const hideNavbarRoutes = ['/motivai'];
+  const { hideNavbar } = useAuth();
+  const hideNavbarRoutes = ['/motivai','/login'];
 
-  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
+  const shouldHideNavbarByPath = hideNavbarRoutes.includes(location.pathname);
+
+  const shouldHideNavbar = hideNavbar || shouldHideNavbarByPath;
 
   return (
     <div className="bg-[#090F22]/90 text-white overflow-x-hidden flex flex-col min-h-screen relative">
@@ -37,6 +42,7 @@ function AppContent() {
           <Route path="/youtube" element={<YouTubeForm />} />
           <Route path="/document" element={<DocumentForm />} />
           <Route path="/voice" element={<AIVoiceInput />} />
+          <Route path='/login' element={<LoginSignupPage/>}/>
           <Route path="/chatbot" element={<Chatbot />} />
         </Routes>
       </div>
