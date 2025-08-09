@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
   const MotionLink = motion(Link);
@@ -12,34 +13,35 @@ const Navbar = () => {
   return (
     <div className="flex justify-center w-full mt-7  bg-transparent">
       <div className="flex items-center justify-between px-6 py-3 bg-slate-900/90 rounded-full shadow-lg w-full max-w-4xl relative z-10 border border-slate-700">
-  {/* Logo with hover glow effect */}
-<div className="group flex items-center cursor-pointer">
-  <motion.div
-    className="flex items-center"
-    initial={{ scale: 0.8 }}
-    animate={{ scale: 1 }}
-    whileHover={{ rotate: 5 }}
-    transition={{ duration: 0.3 }}
-  >
-    {/* Glowing GIF on hover */}
-    <div className="relative w-10 h-10">
-      {/* Glow behind gif */}
-      <div className="absolute inset-0 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 bg-purple-500"></div>
+        {/* Logo with hover glow effect */}
+        <div className="group flex items-center cursor-pointer">
+          <motion.div
+          onClick={() => navigate("/")}
+            className="flex items-center cursor-pointer"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            whileHover={{ rotate: 5 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Glowing GIF on hover */}
+            <div className="relative w-10 h-10">
+              {/* Glow behind gif */}
+              <div className="absolute inset-0 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 bg-purple-500"></div>
 
-      {/* Actual gif */}
-      <img
-        src="/spheric-vortex-of-pastel-light-loader.gif"
-        alt="Logo"
-        className="w-full h-full rounded-full relative z-10"
-      />
-    </div>
+              {/* Actual gif */}
+              <img
+                src="/spheric-vortex-of-pastel-light-loader.gif"
+                alt="Logo"
+                className="w-full h-full rounded-full relative z-10"
+              />
+            </div>
 
-    {/* Brand name */}
-    <span className="ml-3 font-bold text-white text-lg">EduVoice.ai</span>
-  </motion.div>
-</div>
-
-
+            {/* Brand name */}
+            <span className="ml-3 font-bold text-white text-lg">
+              EduVoice.AI
+            </span>
+          </motion.div>
+        </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8">
@@ -66,14 +68,12 @@ const Navbar = () => {
           transition={{ duration: 0.3, delay: 0.2 }}
           whileHover={{ scale: 1.05 }}
         >
-          <button
-            onClick={() => {
-              window.location.href = "http://127.0.0.1:8000/auth/google";
-            }}
+          <Link
+            to="/login"
             className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
           >
             Get Started
-          </button>
+          </Link>
         </motion.div>
 
         {/* Mobile Toggle */}
@@ -135,7 +135,7 @@ const Navbar = () => {
                   className="pt-6"
                 >
                   <button
-                    to="//http://127.0.0.1:8000/auth/google"
+                    to="/login"
                     className="inline-flex items-center justify-center w-full px-5 py-3 text-base text-white bg-indigo-600 rounded-full hover:bg-indigo-500 transition-colors"
                     onClick={toggleMenu}
                   >

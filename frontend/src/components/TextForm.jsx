@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "../api/axiosInstance";
 import Summary from "./Summary";
+import { useAuth } from "../context/AuthContext";
 
 export default function TextForm() {
   const [text, setText] = useState("");
@@ -9,6 +10,7 @@ export default function TextForm() {
   const [showSummary, setShowSummary] = useState(false);
   const [summary, setSummary] = useState(null);
   const [activeTab, setActiveTab] = useState("basic");
+   const { setHideNavbar } = useAuth(); 
 
   const handleSummarize = async (e) => {
     e.preventDefault();
@@ -20,7 +22,10 @@ export default function TextForm() {
       console.log(res.data);
       
       setSummary(res.data);
+      // setBasicSummary(res.data["basic"]);
       setActiveTab("basic");
+      setHideNavbar(true); // 👈 hide the navbar after summary is ready
+
       setShowSummary(true);
     } catch (err) {
       console.error(err);
@@ -95,6 +100,7 @@ export default function TextForm() {
             setText("");
             setSummary(null);
             setShowSummary(false);
+            setHideNavbar(false);
           }}
         />
       )}

@@ -1,5 +1,7 @@
 import { Mic, Upload, Youtube, Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import BlobBackground from "../components/BlobBackground";
+// import stars from "../assets/stars.svg";
 
 
 export default function InputPage() {
@@ -10,8 +12,8 @@ export default function InputPage() {
   };
 
   return (
-    <div className=" relative  text-white flex flex-col items-center justify-center p-6 pt-23 ">
-      {/* <SplashCursor/> */}
+    <div className=" relative  text-white flex flex-col items-center justify-center p-6 pt-23 overflow-hidden md:h-[639px] ">
+      {/* <BlobBackground/> */}
       <h1 className="text-4xl font-bold mb-8 text-center">
         Choose Your Input Type
       </h1>

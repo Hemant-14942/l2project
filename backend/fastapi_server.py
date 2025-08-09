@@ -17,16 +17,20 @@ from pydantic import BaseModel
 import uvicorn
 from dotenv import load_dotenv
 from urllib.parse import urlencode
+from pathlib import Path
 import shutil
 import requests
 
 from jwt_utils.auth import create_access_token, decode_token
+from flashcard_generator import  FlashcardGenerator
 
 # Import our custom modules
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
+
+
 
 # Load environment variables
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
@@ -139,7 +143,9 @@ app.add_middleware(
 # Static files
 os.makedirs("audio_cache", exist_ok=True)
 os.makedirs("uploads", exist_ok=True)
-app.mount("/audio", StaticFiles(directory="audio_cache"), name="audio")
+BASE_DIR = Path(__file__).resolve().parent
+AUDIO_DIR = BASE_DIR / "audio"
+app.mount("/audio", StaticFiles(directory=AUDIO_DIR), name="audio")
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # Initialize components
@@ -471,11 +477,13 @@ def save_content(
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============= FLASHCARD ENDPOINTS =============
+# Create the instance once
+flashcard_generator = FlashcardGenerator()
 @app.post("/api/flashcards/generate")
 def generate_flashcards(request: FlashcardRequest):
     """Generate flashcards from content"""
     try:
-        flashcards = flashcard_gen.generate_flashcards(request.content, request.difficulty)
+        flashcards = flashcard_generator.generate_flashcards(request.content, request.difficulty)
         return {"flashcards": flashcards}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -510,7 +518,8 @@ def generate_quiz(request: QuizRequest):
             return {
                 "session_id": session_id,
                 "questions": questions,
-                "total_questions": len(questions)
+                "total_questions": len(questions),
+                "msg": "Quiz questions generated successfully"
             }
         else:
             raise HTTPException(status_code=400, detail="Failed to generate quiz questions")
@@ -679,19 +688,23 @@ def get_mood_history(user_id: str, days: int = 7):
         return {"mood_history": history}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 # ============= TTS ENDPOINTS =============
 @app.post("/api/tts/create")
 def create_audio(text: str = Form(...), voice_type: str = Form("summary")):
+    print("inside create_audio")
     """Create audio from text"""
     try:
         if voice_type == "summary":
+            print("inside create_summary_audio")
             audio_file = tts_engine.create_summary_audio({"basic": text}, "basic")
         else:
             audio_file = tts_engine.create_audio_file(text)
-
+        
         if audio_file:
-            return {"audio_file": audio_file}
+            # Convert local path (e.g., audio/xyz.wav) to public URL
+            filename = os.path.basename(audio_file)
+            return {"audio_file": f"/audio/{filename}"}
         else:
             raise HTTPException(status_code=500, detail="Failed to create audio")
     except Exception as e:
