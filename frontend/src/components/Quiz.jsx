@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from '../api/axiosInstance';
+import BackgroundBoxesDemo from './BackgroundBoxesDemo';
+import { motion, AnimatePresence } from "framer-motion";
 
 const Quiz = () => {
   const { basicSummary } = useAuth();
@@ -12,6 +14,10 @@ const Quiz = () => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [quizStarted, setQuizStarted] = useState(false);
+
+  useEffect(()=>{
+    console.log("basicSummary?.basic", basicSummary?.basic);
+  },[basicSummary]);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -100,7 +106,7 @@ const Quiz = () => {
 
   if (!quizData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0D0D0D] via-[#1a1a2e] to-[#16213e] flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center z-2">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
           <p className="text-white text-xl">Generating your personalized quiz...</p>
@@ -111,42 +117,45 @@ const Quiz = () => {
   }
 
   if (!quizStarted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0D0D0D] via-[#1a1a2e] to-[#16213e] flex items-center justify-center p-6">
-        <div className="max-w-2xl mx-auto text-center bg-[#1F1F1F]/80 backdrop-blur-lg rounded-2xl p-8 border border-gray-800">
-          <div className="mb-6">
-            <h1 className="text-4xl font-bold text-white mb-4">🧠 Knowledge Quiz</h1>
-            <p className="text-gray-300 text-lg">Test your understanding with {quizData.total_questions} engaging questions</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-purple-500/20 rounded-xl p-4 border border-purple-500/30">
-              <div className="text-2xl mb-2">⏱️</div>
-              <div className="text-white font-semibold">30 seconds</div>
-              <div className="text-gray-400 text-sm">per question</div>
-            </div>
-            <div className="bg-blue-500/20 rounded-xl p-4 border border-blue-500/30">
-              <div className="text-2xl mb-2">📊</div>
-              <div className="text-white font-semibold">Instant feedback</div>
-              <div className="text-gray-400 text-sm">with explanations</div>
-            </div>
-            <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/30">
-              <div className="text-2xl mb-2">🎯</div>
-              <div className="text-white font-semibold">Track progress</div>
-              <div className="text-gray-400 text-sm">see your results</div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setQuizStarted(true)}
-            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+  return (
+    <div className="min-h-screen relative flex items-center justify-center p-6">
+      {/* Background layer with fade-out */}
+      <AnimatePresence>
+        {!quizStarted && (
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
           >
-            Start Quiz 🚀
-          </button>
+            <BackgroundBoxesDemo />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Foreground content */}
+      <div className="relative z-20 max-w-2xl mx-auto text-center rounded-2xl p-8 border border-gray-800 bg-black/40 backdrop-blur-sm">
+        <div className="mb-6">
+          <h1 className="text-4xl font-bold text-white mb-4">🧠 Knowledge Quiz</h1>
+          <p className="text-gray-300 text-lg">
+            Test your understanding with {quizData.total_questions} engaging questions
+          </p>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {/* info boxes here */}
+        </div>
+
+        <button
+          onClick={() => setQuizStarted(true)}
+          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+        >
+          Start Quiz 🚀
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0D0D0D] via-[#1a1a2e] to-[#16213e] p-6">

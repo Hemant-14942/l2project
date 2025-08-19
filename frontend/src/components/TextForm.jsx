@@ -10,7 +10,7 @@ export default function TextForm() {
   const [showSummary, setShowSummary] = useState(false);
   const [summary, setSummary] = useState(null);
   const [activeTab, setActiveTab] = useState("basic");
-   const { setHideNavbar } = useAuth(); 
+  const { setHideNavbar } = useAuth();
 
   const handleSummarize = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ export default function TextForm() {
     try {
       const res = await axios.post("/api/summarize/all", { content: text });
       console.log(res.data);
-      
+
       setSummary(res.data);
       // setBasicSummary(res.data["basic"]);
       setActiveTab("basic");
@@ -53,6 +53,12 @@ export default function TextForm() {
 
           <form onSubmit={handleSummarize} className="space-y-4">
             <textarea
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(); // stop newline
+                  handleSummarize(e); // call your submit function
+                }
+              }}
               value={text}
               onChange={(e) => setText(e.target.value)}
               className="w-full h-52 p-4 bg-[#2a194f] text-white text-sm rounded-lg border border-white/10 focus:outline-none resize-none"
@@ -71,25 +77,26 @@ export default function TextForm() {
       )}
 
       {loading && (
-  <div className="mt-20 flex flex-col items-center justify-center gap-6 animate-fade-in">
-    {/* Glowing animated container */}
-    <div className="relative w-52 h-52 rounded-full overflow-hidden bg-amber-100 shadow-[0_0_60px_10px_rgba(255,191,0,0.3)] animate-bounce-slow flex justify-center items-center">
-      <img
-        src="/monkeyfunny.gif"
-        alt="Loading monkey"
-        className="w-full h-full object-cover p-4 rounded-full"
-      />
-    </div>
+        <div className="mt-20 flex flex-col items-center justify-center gap-6 animate-fade-in">
+          {/* Glowing animated container */}
+          <div className="relative w-52 h-52 rounded-full overflow-hidden bg-amber-100 shadow-[0_0_60px_10px_rgba(255,191,0,0.3)] animate-bounce-slow flex justify-center items-center">
+            <img
+              src="/monkeyfunny.gif"
+              alt="Loading monkey"
+              className="w-full h-full object-cover p-4 rounded-full"
+            />
+          </div>
 
-    {/* Spinner & message */}
-    <div className="text-center space-y-3">
-      <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
-      <p className="text-md text-gray-400 font-light tracking-wide">
-        Monkey is thinking hard... <br /> Please hold tight while we generate your summary.
-      </p>
-    </div>
-  </div>
-)}
+          {/* Spinner & message */}
+          <div className="text-center space-y-3">
+            <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin" />
+            <p className="text-md text-gray-400 font-light tracking-wide">
+              Monkey is thinking hard... <br /> Please hold tight while we
+              generate your summary.
+            </p>
+          </div>
+        </div>
+      )}
 
       {summary && !loading && showSummary && (
         <Summary

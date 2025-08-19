@@ -8,10 +8,12 @@ import {
   Eye,
   Loader2,
   Volume2,
+  ArrowRight,
 } from "lucide-react";
 import CustomAudioPlayer from "./CustomAudioPlayer";
 import AudioGenerator from "./AudioGenerator";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // Formatting functions for summaries
 const formatBasicSummary = (text = "") => {
@@ -184,18 +186,17 @@ const VisualCard = ({ data }) => {
 
 // 🌟 Summary main wrapper
 const Summary = ({ summary, activeTab, setActiveTab, resetForm }) => {
+  const navigate = useNavigate();
   const {basic, story, visual} = summary;
   const { setBasicSummary, basicSummary } = useAuth();
   // console.log(basic);
   // console.log(story);
   // console.log(visual);
-    useEffect(() => {
-    if (summary) {
-      setBasicSummary(summary);
-      console.log(basicSummary);
-
-    }
-  }, [])
+   useEffect(() => {
+  if (summary) {
+    setBasicSummary(summary);
+  }
+}, [summary]);
   // console.log(basicSummary);
   
   
@@ -235,13 +236,22 @@ const Summary = ({ summary, activeTab, setActiveTab, resetForm }) => {
           <span className="hidden sm:inline">Back to Input</span>
         </button>
 
-        <h2 className="text-2xl font-semibold text-white">
+        <h2 className="text-xl md:text-2xl font-semibold text-white">
           {activeTab === "story" && <span>Story Summary</span>}
           {activeTab === "visual" && <span>Visual Summary</span>}
           {activeTab === "basic" && <span>Basic Summary</span>}
         </h2>
 
-        <div className="w-10 md:w-32"></div>
+        {/* <div className="w-10 md:w-32"></div> */}
+        <div>
+          <button
+          onClick={()=>navigate("/SummaryPlayer")}
+            className="flex items-center gap-2 px-2 md:px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full transition-all duration-300 font-medium"
+          >
+            <ArrowRight size={16} />
+            <span className="">Next</span>
+          </button>
+        </div>
       </div>
 
       {/* Tab Container */}

@@ -13,15 +13,18 @@ import Chatbot from './components/ChatBot.jsx';
 import MotivAI from './pages/MotivAI.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 import LoginSignupPage from './components/LoginSignupPage.jsx';
+import SummaryPlayer from './components/SummaryPlayer.jsx';
+import Quiz from "./components/Quiz.jsx";
+import Flashcards from "./components/Flashcards.jsx";
 
 function AppContent() {
   const location = useLocation();
-  const { hideNavbar } = useAuth();
-  const hideNavbarRoutes = ['/motivai','/login'];
+  // const { hideNavbar } = useAuth();
+  const hideNavbarRoutes = ['/motivai','/login','/text','/youtube','/document','/voice'];
 
   const shouldHideNavbarByPath = hideNavbarRoutes.includes(location.pathname);
 
-  const shouldHideNavbar = hideNavbar || shouldHideNavbarByPath;
+  const shouldHideNavbar = shouldHideNavbarByPath;
 
   return (
     <div className="bg-[#090F22]/90 text-white overflow-x-hidden flex flex-col min-h-screen relative">
@@ -30,7 +33,7 @@ function AppContent() {
           <Navbar />
         </div>
       )}
-      <div className={!shouldHideNavbar ? 'mt-23' : 'mt-5'}>
+      <div className={!shouldHideNavbar ? "mt-23" : "mt-5"}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Navigate to="/" replace />} />
@@ -42,7 +45,10 @@ function AppContent() {
           <Route path="/youtube" element={<YouTubeForm />} />
           <Route path="/document" element={<DocumentForm />} />
           <Route path="/voice" element={<AIVoiceInput />} />
-          <Route path='/login' element={<LoginSignupPage/>}/>
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/flashcard" element={<Flashcards/>} />
+          <Route path="/SummaryPlayer" element={<SummaryPlayer />} />
+          <Route path="/login" element={<LoginSignupPage />} />
           <Route path="/chatbot" element={<Chatbot />} />
         </Routes>
       </div>

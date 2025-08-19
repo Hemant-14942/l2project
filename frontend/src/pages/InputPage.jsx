@@ -1,6 +1,5 @@
 import { Mic, Upload, Youtube, Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import BlobBackground from "../components/BlobBackground";
 // import stars from "../assets/stars.svg";
 
 

@@ -8,12 +8,14 @@ import EduVoiceHeroHero from '../components/EduVoiceHero.jsx';
 import FloatingAIWidget from '../components/FloatingAIWidget.jsx';
 import Quiz from '../components/Quiz.jsx';
 
+
 export default function Home() {
   return (
     <div className="flex flex-col text-slate-200 overflow-x-hidden relative">
       <main className="flex-1 ">
                 <EduVoiceHeroHero />
                 <Features />
+                {/* <Quiz/> */}
                 <FloatingAIWidget />
                 <ParticleTextEffect />
                 <FAQ />
