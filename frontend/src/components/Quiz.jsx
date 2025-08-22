@@ -15,9 +15,11 @@ const Quiz = () => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [quizStarted, setQuizStarted] = useState(false);
 
-  useEffect(()=>{
-    console.log("basicSummary?.basic", basicSummary?.basic);
-  },[basicSummary]);
+  // useEffect(()=>{
+  //   console.log("basicSummary", basicSummary);
+    
+  //   console.log("basicSummary?.basic", basicSummary?.basic);
+  // },[basicSummary]);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -28,6 +30,8 @@ const Quiz = () => {
           user_id: "user123"
         });
         setQuizData(resp.data);
+        // console.log("quizData", resp.data);
+        
       } catch (error) {
         console.error("❌ Error generating quiz:", error);
       }
@@ -54,31 +58,30 @@ const Quiz = () => {
   };
 
   const handleOptionClick = (selectedIndex) => {
-    if (selectedOption !== null) return;
-    
-    setSelectedOption(selectedIndex);
-    setShowExplanation(true);
-    
-    setTimeout(() => {
-      handleNextQuestion();
-    }, 3000);
-  };
+  if (selectedOption !== null) return;
 
-  const handleNextQuestion = () => {
-    const updatedAnswers = [...userAnswers, selectedOption];
-    
-    if (currentQuestionIndex + 1 < quizData.questions.length) {
-      setUserAnswers(updatedAnswers);
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
-      setShowExplanation(false);
-      setTimeLeft(30);
-    } else {
-      setUserAnswers(updatedAnswers);
-      setShowResults(true);
-    }
-  };
+  setSelectedOption(selectedIndex);
+  setShowExplanation(true);
 
+  setTimeout(() => {
+    handleNextQuestion(selectedIndex);  // pass the value directly
+  }, 3000);
+};
+
+const handleNextQuestion = (answerIndex = null) => {
+  const updatedAnswers = [...userAnswers, answerIndex ?? selectedOption];
+  
+  if (currentQuestionIndex + 1 < quizData.questions.length) {
+    setUserAnswers(updatedAnswers);
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    setSelectedOption(null);
+    setShowExplanation(false);
+    setTimeLeft(30);
+  } else {
+    setUserAnswers(updatedAnswers);
+    setShowResults(true);
+  }
+};
   const calculateScore = () => {
     return quizData.questions.reduce((score, q, i) => {
       return q.correct_answer === userAnswers[i] ? score + 1 : score;
@@ -287,6 +290,8 @@ const Quiz = () => {
           <div className="space-y-6">
             {quizData.questions.map((q, i) => {
               const userAnswer = userAnswers[i];
+              console.log("userAnswer:", userAnswer);
+              
               const isCorrect = userAnswer === q.correct_answer;
 
               return (

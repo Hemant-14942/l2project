@@ -1,18 +1,14 @@
 import { useState } from "react";
 import axios from "../api/axiosInstance";
-import {
-  Loader2,
-  Volume2,
-} from "lucide-react";
+import { Loader2, Volume2 } from "lucide-react";
+import CustomAudioPlayer from "./CustomAudioPlayer";
 const AudioGenerator = ({ text, voiceType }) => {
   console.log("inside audio generator");
-  
-  
+
   const [loading, setLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const BASE_URL = "http://localhost:8000";
   // console.log(text);
-
 
   const handleGenerateAudio = async () => {
     console.log("inside handle generate audio");
@@ -22,21 +18,25 @@ const AudioGenerator = ({ text, voiceType }) => {
     try {
       const formData = new FormData();
       formData.append("text", text);
+      // console.log(text);
+      
       // formData.append("voice_type", voiceType);
       console.log("going for the response giys🎟 ");
-      
+
       const response = await axios.post("/api/tts/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data);
-      console.log(response.data.audio_file);
+      console.log("after calling the api");
       
+      console.log(response.data);
+      // console.log(response.data.audio_file);
 
-      if (response.data.audio_file) {
-        setAudioUrl(`${BASE_URL}${response.data.audio_file}?t=${Date.now()}`);
-        console.log("Audio URL:", audioUrl);
+      if (response.data) {
+        const newUrl = `${BASE_URL}${response.data.audio_file}?t=${Date.now()}`;
+        setAudioUrl(newUrl);
+        console.log("Audio URL:", newUrl);
       }
     } catch (error) {
       console.error("Error generating audio:", error);
@@ -65,7 +65,7 @@ const AudioGenerator = ({ text, voiceType }) => {
       </button>
 
       {audioUrl && (
-         <CustomAudioPlayer src={audioUrl} />
+        <CustomAudioPlayer src={audioUrl} />
         // <audio controls className="mt-3 w-full max-w-md block">
         //   <source src={audioUrl} type="audio/mpeg" />
         //   Your browser does not support the audio element.

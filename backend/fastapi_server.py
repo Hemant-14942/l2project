@@ -704,6 +704,7 @@ def create_audio(text: str = Form(...), voice_type: str = Form("summary")):
         if audio_file:
             # Convert local path (e.g., audio/xyz.wav) to public URL
             filename = os.path.basename(audio_file)
+            print(f"Audio saved to {filename}")
             return {"audio_file": f"/audio/{filename}"}
         else:
             raise HTTPException(status_code=500, detail="Failed to create audio")
