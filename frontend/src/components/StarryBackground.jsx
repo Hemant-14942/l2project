@@ -104,6 +104,17 @@ export default function StarryBackground({
 
       {/* Shooting stars */}
       <svg ref={svgRef} className="w-full h-full absolute inset-0">
+        <defs>
+          {/* Glow filter for shooting stars */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
         {stars.map(star => (
           <React.Fragment key={star.id}>
             <defs>
@@ -119,31 +130,116 @@ export default function StarryBackground({
               height={starHeight}
               fill={`url(#gradient-${star.id})`}
               transform={`rotate(${star.angle}, ${star.x + (starWidth * star.scale) / 2}, ${star.y + starHeight / 2})`}
+              filter="url(#glow)"
             />
           </React.Fragment>
         ))}
       </svg>
 
-      {/* Twinkle animation CSS */}
+      {/* Enhanced twinkle animation CSS with white colors only */}
       <style jsx>{`
         .stars {
           background-image:
-            radial-gradient(2px 2px at 20px 30px, #eee, rgba(0, 0, 0, 0)),
-            radial-gradient(2px 2px at 40px 70px, #fff, rgba(0, 0, 0, 0)),
-            radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0, 0, 0, 0)),
-            radial-gradient(2px 2px at 90px 40px, #fff, rgba(0, 0, 0, 0)),
-            radial-gradient(2px 2px at 130px 80px, #fff, rgba(0, 0, 0, 0)),
-            radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0, 0, 0, 0));
+            radial-gradient(1px 1px at 23px 47px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1.5px 1.5px at 178px 112px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 67px 189px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(2px 2px at 234px 31px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 145px 78px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1.5px 1.5px at 89px 234px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 312px 167px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(2px 2px at 12px 145px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 267px 89px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1.5px 1.5px at 134px 12px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 45px 278px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(2px 2px at 198px 201px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 289px 156px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1.5px 1.5px at 56px 67px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 167px 289px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(2px 2px at 223px 134px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 78px 23px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1.5px 1.5px at 301px 245px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(1px 1px at 112px 198px, #ffffff, rgba(255, 255, 255, 0)),
+            radial-gradient(2px 2px at 34px 112px, #ffffff, rgba(255, 255, 255, 0));
           background-repeat: repeat;
-          background-size: 200px 200px;
-          animation: twinkle 5s ease-in-out infinite;
-          opacity: 0.5;
+          background-size: 350px 350px;
+          animation: 
+            star1 4.1s ease-in-out infinite 0.5s,
+            star2 3.7s ease-in-out infinite 1.8s,
+            star3 5.3s ease-in-out infinite 3.2s,
+            star4 3.9s ease-in-out infinite 0.9s,
+            star5 4.8s ease-in-out infinite 4.1s,
+            star6 2.9s ease-in-out infinite 2.3s,
+            star7 6.2s ease-in-out infinite 1.4s,
+            star8 3.3s ease-in-out infinite 5.1s,
+            star9 4.7s ease-in-out infinite 0.2s,
+            star10 5.8s ease-in-out infinite 3.7s;
+          opacity: 0.9;
+          filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
         }
 
-        @keyframes twinkle {
-          0% { opacity: 0.5; }
-          50% { opacity: 0.8; }
-          100% { opacity: 0.5; }
+        @keyframes star1 {
+          0%, 100% { opacity: 0.8; }
+          45% { opacity: 1; }
+          70% { opacity: 0.9; }
+        }
+
+        @keyframes star2 {
+          0%, 100% { opacity: 0.4; }
+          60% { opacity: 0.9; }
+          30% { opacity: 0.1; }
+        }
+
+        @keyframes star3 {
+          0%, 100% { opacity: 0.7; }
+          25% { opacity: 0.9; }
+          80% { opacity: 0.3; }
+        }
+
+        @keyframes star4 {
+          0%, 100% { opacity: 0.2; }
+          35% { opacity: 0.1; }
+          75% { opacity: 1; }
+          90% { opacity: 0.8; }
+        }
+
+        @keyframes star5 {
+          0%, 100% { opacity: 0.9; }
+          20% { opacity: 0.7; }
+          50% { opacity: 0.2; }
+          85% { opacity: 1; }
+        }
+
+        @keyframes star6 {
+          0%, 100% { opacity: 0.3; }
+          40% { opacity: 0.8; }
+          65% { opacity: 0.1; }
+          90% { opacity: 0.6; }
+        }
+
+        @keyframes star7 {
+          0%, 100% { opacity: 0.6; }
+          30% { opacity: 1; }
+          55% { opacity: 0.4; }
+        }
+
+        @keyframes star8 {
+          0%, 100% { opacity: 0.1; }
+          25% { opacity: 0.3; }
+          70% { opacity: 0.9; }
+        }
+
+        @keyframes star9 {
+          0%, 100% { opacity: 0.5; }
+          15% { opacity: 0.8; }
+          45% { opacity: 0.2; }
+          80% { opacity: 1; }
+        }
+
+        @keyframes star10 {
+          0%, 100% { opacity: 0.8; }
+          35% { opacity: 0.4; }
+          60% { opacity: 1; }
+          85% { opacity: 0.1; }
         }
       `}</style>
     </div>
