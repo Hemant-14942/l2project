@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 import { Link,useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -10,13 +11,19 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const MotionLink = motion(Link);
 
+  const { isLoggedIn } = useAuth();
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
   return (
     <div className="flex justify-center w-full mt-7  bg-transparent">
       <div className="flex items-center justify-between px-6 py-3 bg-slate-900/90 rounded-full shadow-lg w-full max-w-4xl relative z-10 border border-slate-700">
         {/* Logo with hover glow effect */}
         <div className="group flex items-center cursor-pointer">
           <motion.div
-          onClick={() => navigate("/")}
+            onClick={() => navigate("/")}
             className="flex items-center cursor-pointer"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
@@ -68,12 +75,23 @@ const Navbar = () => {
           transition={{ duration: 0.3, delay: 0.2 }}
           whileHover={{ scale: 1.05 }}
         >
+          {
+          !isLoggedIn ?(
           <Link
             to="/login"
             className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
           >
-            Get Started
+            Login
           </Link>
+          ):(
+          <Link
+            onClick={handleLogout}
+            className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
+          >
+            Logout
+          </Link>
+          )
+          }
         </motion.div>
 
         {/* Mobile Toggle */}

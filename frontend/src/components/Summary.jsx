@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
 import { motion } from "framer-motion";
@@ -30,34 +31,46 @@ const formatBasicSummary = (text = "") => {
     .replace(/\n/g, "<br />");
 };
 
-const formatStoryText = (text = "") => {
+const formatStoryText = (text = "", dyslexicMode = false) => {
+  // choose base classes depending on mode
+  const baseTextClass = dyslexicMode
+    ? "font-[OpenDyslexic] text-gray-900 leading-relaxed"
+    : "text-gray-800 leading-relaxed";
+
+  const highlightClass = dyslexicMode
+    ? "text-purple-800 font-bold underline"
+    : "text-purple-500 font-semibold";
+
   return text
     .replace(
       /\*\*(.*?)\*\*/g,
-      "<strong class='text-purple-300 font-semibold'>$1</strong>"
+      `<strong class='${highlightClass}'>$1</strong>`
     )
     .replace(
       /###\s*(.*)/g,
-      "<h3 class='text-lg font-semibold text-white mb-3 flex items-center gap-2'>$1</h3>"
+      `<h3 class='text-xl font-bold text-gray-900 mb-3 flex items-center gap-2 ${dyslexicMode ? "font-[OpenDyslexic]" : ""}'>$1</h3>`
     )
     .replace(
       /####\s*(.*)/g,
-      "<h4 class='text-base font-medium text-gray-200 mb-2 flex items-center gap-2'>$1</h4>"
+      `<h4 class='text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2 ${dyslexicMode ? "font-[OpenDyslexic]" : ""}'>$1</h4>`
     )
     .replace(
       /(\bZiggy\b|\bJamie\b|\bGrandma Dot\b|\bDr. Luna\b)/gi,
-      "<span class='text-purple-200 font-medium'>$1</span>"
+      `<span class='${highlightClass}'>$1</span>`
     )
     .replace(
       /(\blove\b|\bheart\b|\bcare\b|\bkindness\b|\bconnection\b)/gi,
-      "<span class='text-purple-200 font-medium'>$1</span>"
+      `<span class='${highlightClass}'>$1</span>`
     )
     .replace(
       /💖|❤️|💌|🚲|🧩|🏰|⚡️|🌈/g,
       "<span class='text-xl inline-block mx-1'>$&</span>"
     )
-    .replace(/\n/g, "<br />");
+    .replace(/\n/g, "<br />")
+    // wrap everything in base text class for readability
+    .concat(`<style>.story-text { ${dyslexicMode ? "font-family: OpenDyslexic, sans-serif;" : ""} }</style>`);
 };
+
 
 const formatVisualContent = (text = "") => {
   return text
@@ -98,9 +111,13 @@ const formatVisualContent = (text = "") => {
 
 
 // 🔲 Renders the Basic summary as bullet-style points
-const BasicCard = ({ data }) => {
+const BasicCard = ({ data, Dyslexic }) => {
   if (!data) return null;
   const points = data.split(/^-\s+/gm).filter((point) => point.trim());
+
+  // colors for bullet points (semantic cues)
+  const bulletColors = [    "bg-purple-500",
+  ];
 
   return (
     <div className="space-y-3">
@@ -110,10 +127,26 @@ const BasicCard = ({ data }) => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className="flex items-start gap-3 p-4 bg-gray-800/20 rounded-xl border border-gray-700/30 hover:border-purple-500/30 transition-all duration-300"
+          className={`group flex items-start gap-3 p-4 rounded-xl border transition-all duration-300
+            ${Dyslexic
+              ? "bg-[#fdfcf6] border-gray-300 hover:border-purple-400/50"
+              : "bg-gray-800/20 border-gray-700/30 hover:border-purple-500/30"}
+          `}
         >
-          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-          <div className="flex-1 text-gray-300 leading-relaxed">
+          {/* Bullet point with color coding */}
+          <div
+            className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 
+              ${bulletColors[idx % bulletColors.length]}`}
+          ></div>
+
+          {/* Text container */}
+          <div
+            className={`flex-1 leading-relaxed transition-colors duration-300 max-w-prose text-left
+              ${Dyslexic
+                ? "font-dyslexic text-gray-950 text-[16px] md:text-[18px] tracking-wide leading-8"
+                : "text-gray-300 text-base"}
+            `}
+          >
             <div
               dangerouslySetInnerHTML={{
                 __html: formatBasicSummary(point.trim()),
@@ -122,13 +155,17 @@ const BasicCard = ({ data }) => {
           </div>
         </motion.div>
       ))}
-      <AudioGenerator text={data.trim()} voiceType="summary" />
+
+      {/* Audio generator (with dyslexic-friendly spacing) */}
+      <div className={Dyslexic ? "pt-4 border-t border-gray-300" : "pt-4 border-t border-gray-700/30"}>
+        <AudioGenerator text={data.trim()} voiceType="summary" />
+      </div>
     </div>
   );
 };
 
 // 📖 Story-based summary with sections
-const StoryCard = ({ data }) => {
+const StoryCard = ({ data, Dyslexic }) => {
   if (!data) return null;
   const sections = data.split(/#### |### /).filter((section) => section.trim());
 
@@ -140,9 +177,19 @@ const StoryCard = ({ data }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className="p-4 bg-gray-800/20 rounded-xl border border-gray-700/30 hover:border-purple-500/30 transition-all duration-300"
+          className={`p-5 rounded-xl border transition-all duration-300 group
+            ${Dyslexic
+              ? "bg-[#fdfcf6] border-gray-300 hover:border-purple-400/50"
+              : "bg-gray-800/20 border-gray-700/30 hover:border-purple-500/30"}
+          `}
         >
-          <div className="text-gray-300 leading-relaxed">
+          <div
+            className={`leading-relaxed max-w-prose text-left transition-colors duration-300
+              ${Dyslexic
+                ? "font-dyslexic text-gray-950 text-[16px] md:text-[18px] tracking-wide leading-8"
+                : "text-gray-300 text-base"}
+            `}
+          >
             <div
               dangerouslySetInnerHTML={{
                 __html: formatStoryText(section.trim()),
@@ -151,13 +198,22 @@ const StoryCard = ({ data }) => {
           </div>
         </motion.div>
       ))}
-      <AudioGenerator text={data.trim()} voiceType="summary" />
+
+      {/* Audio section */}
+      <div
+        className={`pt-4 border-t transition-colors duration-300 
+          ${Dyslexic ? "border-gray-300" : "border-gray-700/30"}
+        `}
+      >
+        <AudioGenerator text={data.trim()} voiceType="story" />
+      </div>
     </div>
   );
 };
 
+
 // 👁️ Visual tab display
-const VisualCard = ({ data }) => {
+const VisualCard = ({ data, Dyslexic }) => {
   if (!data) return null;
   const sections = data
     .split(/─{3,}|═{3,}/g)
@@ -189,6 +245,7 @@ const Summary = ({ summary, activeTab, setActiveTab, resetForm }) => {
   const navigate = useNavigate();
   const {basic, story, visual} = summary;
   const { setBasicSummary, basicSummary } = useAuth();
+  const [Dyslexic, setDyslexic] = useState(false);
   // console.log(basic);
   // console.log(story);
   // console.log(visual);
@@ -212,19 +269,14 @@ const Summary = ({ summary, activeTab, setActiveTab, resetForm }) => {
         return null;
     }
   };
+  const handleDyslexic = () => {
+    setDyslexic(!Dyslexic);
+    console.log(Dyslexic);
+    
+  }
 
   return (
     <div className="w-full max-w-5xl mx-auto mt-8">
-      {/* <img
-        src="/moon.png"
-        alt=""
-        className="w-23 h-23 absolute top-6 left-0 "
-      /> */}
-      {/* <img
-        src="/star.gif"
-        alt=""
-        className="w-full h absolute top-6 left-0 "
-      /> */}
       {/* Back Button & Header */}
       <div className="flex items-center justify-between mb-6">
         <button
@@ -243,6 +295,14 @@ const Summary = ({ summary, activeTab, setActiveTab, resetForm }) => {
         </h2>
 
         {/* <div className="w-10 md:w-32"></div> */}
+        <div>
+          <button
+          onClick={handleDyslexic}
+            className="flex items-center gap-2 px-2 md:px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full transition-all duration-300 font-medium"
+          >
+            <span className="">{Dyslexic ? "Dyslixic on" : "Dyslexic off"}</span>
+          </button>
+        </div>
         <div>
           <button
           onClick={()=>navigate("/SummaryPlayer")}
@@ -283,9 +343,9 @@ const Summary = ({ summary, activeTab, setActiveTab, resetForm }) => {
             transition={{ duration: 0.4 }}
             className="max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"
           >
-            {activeTab === "visual" && <VisualCard data={summary.visual} />}
-            {activeTab === "story" && <StoryCard data={summary.story} />}
-            {activeTab === "basic" && <BasicCard data={summary.basic} />}
+            {activeTab === "visual" && <VisualCard data={summary.visual} Dyslexic={Dyslexic} />}
+            {activeTab === "story" && <StoryCard data={summary.story} Dyslexic={Dyslexic} />}
+            {activeTab === "basic" && <BasicCard data={summary.basic} Dyslexic={Dyslexic} />}
           </motion.div>
         </div>
       </div>

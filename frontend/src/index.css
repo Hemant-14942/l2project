@@ -1,4 +1,37 @@
 @import "tailwindcss";
+/* === OpenDyslexic font faces === */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/open-dyslexic/OpenDyslexic-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/open-dyslexic/OpenDyslexic-Italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/open-dyslexic/OpenDyslexic-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/open-dyslexic/OpenDyslexic-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 
 :root {
   --grad-1: linear-gradient(135deg,#1e293b 0%,#0f172a 40%,#1e1b4b 70%,#4338ca 100%);
@@ -20,6 +53,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 --color-foreground : #818cf8;
 --color-background : #0f172a;
 --color-purple:#6D28D9;
+--font-dyslexic: "OpenDyslexic", system-ui, sans-serif;
 }
 @keyframes float1 {
   0%, 100% {
@@ -58,4 +92,35 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 
 .animate-float3 {
   animation: float3 14s ease-in-out infinite;
+}
+/* Custom theme for dictionary tooltip */
+.tippy-box[data-theme~='light-dictionary'] {
+  background: #fdfcf6; /* light gray background */
+  color: #111; /* black text */
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 3px 12px;
+  max-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.dictionary-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tooltip-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0;
+  color: #9c11dd;
+}
+
+.tooltip-text {
+  margin: 0;
+  font-size: 15px;
+  color: #0a0a0a;
 }

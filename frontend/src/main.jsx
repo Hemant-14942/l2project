@@ -4,13 +4,16 @@ import App from './App';
 import './index.css';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import DictionaryTooltipProvider from './components/DictionaryTooltipProvider';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
+    <DictionaryTooltipProvider>
     <App />
     <Toaster position="top-center" />
+    </DictionaryTooltipProvider>
     </AuthProvider>
   </React.StrictMode>
 );
