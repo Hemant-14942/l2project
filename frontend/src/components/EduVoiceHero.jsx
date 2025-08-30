@@ -386,33 +386,6 @@ export default function EduVoiceHero({ title = "eduvoice.ai" }) {
           {/* CTA Button */}
         </motion.div>
       </div>
-
-      {/* Floating Glow Elements */}
-      <motion.div
-        className="absolute left-1/4 top-1/4 h-4 w-4 rounded-full bg-primary/20 blur-sm"
-        animate={{
-          y: [0, -20, 0],
-          x: [0, 10, 0],
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.7, 0.3],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute right-1/3 top-3/4 h-6 w-6 rounded-full bg-secondary/20 blur-sm"
-        animate={{
-          y: [0, 15, 0],
-          x: [0, -15, 0],
-          scale: [1, 0.8, 1],
-          opacity: [0.5, 0.8, 0.5],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      />
     </div>
   );
 }
