@@ -18,8 +18,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("/protected");
-        setUser(res.data.user);
+        const res = await axios.get("/api/user/me");
+        setUser(res.data.user_data);
+        console.log("User:", res.data);
+        
       } catch (err) {
         setUser(null);
       } finally {
