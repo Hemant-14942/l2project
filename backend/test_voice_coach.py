@@ -7,7 +7,7 @@ import io
 import tempfile
 import os
 from voice_to_voice_coach import VoiceToVoiceCoach
-from config import DEFAULT_USER_ID
+from config_fold import DEFAULT_USER_ID
 import whisper
 
 def test_voice_coach():
@@ -80,7 +80,7 @@ def test_azure_openai():
 
     try:
         import openai
-        from config import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+        from config_fold import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 
         if not AZURE_OPENAI_API_KEY:
             print("❌ Azure OpenAI API key not found")

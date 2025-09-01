@@ -7,7 +7,7 @@ import streamlit as st
 import tempfile
 import os
 from voice_to_voice_coach import VoiceToVoiceCoach
-from config import DEFAULT_USER_ID
+from config_fold import DEFAULT_USER_ID
 
 # Page config
 st.set_page_config(

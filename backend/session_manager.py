@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import streamlit as st
-from config import MOOD_OPTIONS, DEFAULT_USER_ID
+from config_fold import MOOD_OPTIONS, DEFAULT_USER_ID
 
 
 class SessionManager:

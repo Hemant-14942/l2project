@@ -10,7 +10,7 @@ from focus_tracker import FocusTracker
 from ai_coach import EnhancedAICoach
 from quiz_system import EnhancedGamifiedQuizSystem
 from session_manager import SessionManager
-from config import DEFAULT_USER_ID
+from config_fold import DEFAULT_USER_ID
 
 
 class EduVoiceBackendTests(unittest.TestCase):

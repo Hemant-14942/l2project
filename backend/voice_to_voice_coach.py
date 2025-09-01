@@ -10,7 +10,7 @@ import whisper
 import io
 import streamlit as st
 from livekit import rtc
-from config import LIVEKIT_API_KEY, LIVEKIT_API_SECRET, LIVEKIT_URL, AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+from config_fold import LIVEKIT_API_KEY, LIVEKIT_API_SECRET, LIVEKIT_URL, AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 import openai
 import numpy as np
 from gtts import gTTS

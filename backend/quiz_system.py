@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from typing import List, Dict, Tuple
 import streamlit as st
-from config import QUIZ_QUESTION_COUNT
+from config_fold import QUIZ_QUESTION_COUNT
 from neuro_summarizer import NeuroSummarizer
 from visual_feedback_manager import VisualFeedbackManager
 

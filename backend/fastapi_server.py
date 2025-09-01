@@ -23,7 +23,10 @@ import requests
 
 from jwt_utils.auth import create_access_token, decode_token
 from flashcard_generator import  FlashcardGenerator
-from config.db import connect_db, close_db
+import config_fold.db as db
+from model.user_model import RegisterModel , LoginModel , SessionModel
+
+from routes.user_routes import router as user_router
 
 # Import our custom modules
 import sys
@@ -149,6 +152,10 @@ BASE_DIR = Path(__file__).resolve().parent
 AUDIO_DIR = BASE_DIR / "audio"
 app.mount("/audio", StaticFiles(directory=AUDIO_DIR), name="audio")
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+
+# include the router
+app.include_router(user_router)
 
 # Initialize components
 file_processor = FileProcessor()
@@ -285,10 +292,8 @@ def login_via_google():
 
 # Step 2: Google redirects here with ?code=
 @app.get("/auth/google/callback")
-def google_callback(request: Request, response: Response):
-    print("inside google_callback")
+async def google_callback(request: Request):
     code = request.query_params.get("code")
-    # print("code", code)
     if not code:
         raise HTTPException(status_code=400, detail="No code provided")
 
@@ -300,34 +305,51 @@ def google_callback(request: Request, response: Response):
         "redirect_uri": REDIRECT_URI,
         "grant_type": "authorization_code"
     })
-    # print("token_res", token_res)
-
     tokens = token_res.json()
     access_token = tokens.get("access_token")
-    print("userinfo k liye google ki api clla krne ja rah hu")
+
     # Get user info
     userinfo = requests.get("https://www.googleapis.com/oauth2/v2/userinfo", headers={
         "Authorization": f"Bearer {access_token}"
     }).json()
-    print("userinfo", userinfo)
-    jwt_token = create_access_token({
-        "email": userinfo["email"],
-        "name": userinfo["name"]
-    })
 
-    # Set cookie (secure, HttpOnly)
-    response = RedirectResponse(url="http://localhost:5173/")  # or wherever
-    response.set_cookie(
-        key="access_token",
-        value=jwt_token,
-        httponly=True,
-        secure=False,  # ❌ should be False only if using HTTP
-        samesite="Lax",  # Lax is okay if redirecting
-        max_age=3600
+    # --- Check if user exists ---
+    user = await db.user_collection.find_one({"email": userinfo["email"]})
+
+    if not user:
+        # register the user (provider = google)
+        new_user = {
+            "email": userinfo["email"],
+            "name": userinfo.get("name"),
+            "provider": "google",
+            "google_id": userinfo.get("id"),
+            "password": None  # no password for google users
+        }
+        result = await db.user_collection.insert_one(new_user)
+        user_id = str(result.inserted_id)
+    else:
+        user_id = str(user["_id"])
+
+    # --- Create session like normal login ---
+    session = SessionModel(
+        user=user_id,
+        user_agent=request.headers.get("User-Agent"),
+        ip=request.client.host
     )
+    session_result = await db.session_collection.insert_one(session.dict())
+    session_id = str(session_result.inserted_id)
 
-    print("response", response)
+    # --- Issue tokens ---
+    jwt_access = create_access_token({"user_id": user_id})
+    jwt_refresh = create_access_token({"session_id": session_id})
+
+    # --- Set cookies ---
+    response = RedirectResponse(url="http://localhost:5173/")
+    response.set_cookie("access_token", jwt_access, httponly=True, secure=False, samesite="Lax", max_age=3600)
+    response.set_cookie("refresh_token", jwt_refresh, httponly=True, secure=False, samesite="Lax", max_age=7*24*3600)
+
     return response
+
     
 # ============= AI COACH ENDPOINTS =============
 @app.post("/api/chat")
@@ -784,11 +806,11 @@ def get_config():
 
 @app.on_event("startup")
 async def startup_event():
-    await connect_db()
+    await db.connect_db()
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    await close_db()
+    await db.close_db()
 
 
 #     uvicorn.run(app, host="0.0.0.0", port=8001)

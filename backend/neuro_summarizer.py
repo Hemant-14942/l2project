@@ -2,7 +2,7 @@ import openai
 import re
 import streamlit as st
 from typing import Dict, List
-from config import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+from config_fold import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 
 class NeuroSummarizer:
     def __init__(self):
