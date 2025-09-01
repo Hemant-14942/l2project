@@ -15,7 +15,7 @@ import { useAuth } from './context/AuthContext.jsx';
 import LoginSignupPage from './components/LoginSignupPage.jsx';
 import SummaryPlayer from './components/SummaryPlayer.jsx';
 import Quiz from "./components/Quiz.jsx";
-import Flashcards from "./components/FlashCards.jsx";
+import FlashCards from "./components/FlashCards.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -46,7 +46,7 @@ function AppContent() {
           <Route path="/document" element={<DocumentForm />} />
           <Route path="/voice" element={<AIVoiceInput />} />
           <Route path="/quiz" element={<Quiz />} />
-          <Route path="/flashcard" element={<Flashcards />} />
+          <Route path="/flashcard" element={<FlashCards />} />
           <Route path="/SummaryPlayer" element={<SummaryPlayer />} />
           <Route path="/login" element={<LoginSignupPage />} />
           <Route path="/chatbot" element={<Chatbot />} />

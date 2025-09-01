@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../api/axiosInstance";
 import Spinner from "./Spinner";
 
-const Flashcards = () => {
+const FlashCards = () => {
   const [flashcards, setFlashcards] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,4 +58,4 @@ const Flashcards = () => {
   );
 };
 
-export default Flashcards;
+export default FlashCards;
