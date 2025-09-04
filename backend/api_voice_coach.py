@@ -19,7 +19,7 @@ import openai
 from utils import generate_livekit_token  # or define in same file
 
 
-from config_fold import LIVEKIT_API_KEY, LIVEKIT_API_SECRET, LIVEKIT_URL, AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+from config import LIVEKIT_API_KEY, LIVEKIT_API_SECRET, LIVEKIT_URL, AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 from gtts import gTTS
 import threading
 

@@ -11,7 +11,7 @@ from sentence_transformers import SentenceTransformer
 import faiss
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle
-from config_fold import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+from config import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 from pydantic import BaseModel
 
 

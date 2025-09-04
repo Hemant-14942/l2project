@@ -7,7 +7,7 @@ import io
 import tempfile
 import os
 from voice_to_voice_coach import VoiceToVoiceCoach
-from config_fold import DEFAULT_USER_ID
+from config import DEFAULT_USER_ID
 import whisper
 
 def test_voice_coach():

@@ -1,6 +1,6 @@
 import openai
 import os
-from config_fold import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+from config import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 
 
 def simplify(text):

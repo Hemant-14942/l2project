@@ -23,7 +23,7 @@ from visual_feedback_manager import VisualFeedbackManager
 from quiz_system import EnhancedGamifiedQuizSystem
 from session_manager import SessionManager
 from voice_to_voice_coach import VoiceToVoiceCoach, LiveKitVoiceCoach
-from config_fold import *
+from config import *
 
 # === STREAMLIT PAGE CONFIG ===
 st.set_page_config(

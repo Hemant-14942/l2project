@@ -431,6 +431,7 @@ def summarize_all(input: SummaryInput):
     try:
         print("inside try")
         summaries = summarizer.get_all_summaries(input.content)
+        print("Summaries just going to return now :")
         return summaries
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

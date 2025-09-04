@@ -2,7 +2,7 @@ import openai
 import re
 import streamlit as st
 from typing import Dict, List
-from config_fold import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
+from config import AZURE_OPENAI_API_KEY, ENDPOINT_URL, DEPLOYMENT_NAME
 
 class NeuroSummarizer:
     def __init__(self):
@@ -179,12 +179,15 @@ The K-Means Clustering Algorithm"""
 
         with st.spinner("🧠 Generating Basic Summary..."):
             summaries['basic'] = self.basic_summary(content)
+            print("summ basic", summaries['basic'])
 
         with st.spinner("📖 Creating Story Mode..."):
             summaries['story'] = self.story_mode_summary(content)
+            print("summ story", summaries['story'])
 
         with st.spinner("🎨 Building Visual Summary..."):
             summaries['visual'] = self.visual_mode_summary(content)
+            print("summ visual", summaries['visual'])
 
         return summaries
 
