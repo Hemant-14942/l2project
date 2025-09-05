@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const res = await axios.get("/api/user/me");
-        setUser(res.data.user_data);
+        setUser(res.data.username);
         console.log("User:", res.data);
         
       } catch (err) {
