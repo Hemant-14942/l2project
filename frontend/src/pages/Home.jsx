@@ -6,6 +6,7 @@ import { ParticleTextEffect } from '../components/ParticleTextEffect.jsx';
 import FAQ from '../components/FAQ.jsx';
 import EduVoiceHeroHero from '../components/EduVoiceHero.jsx';
 import FloatingAIWidget from '../components/FloatingAIWidget.jsx';
+import WhiteBoard from './WhiteBoard.jsx';
 
 
 
@@ -15,6 +16,7 @@ export default function Home() {
       <main className="flex-1 ">
                 <EduVoiceHeroHero />
                 <Features />
+                {/* <WhiteBoard/> */}
                 <FloatingAIWidget />
                 <ParticleTextEffect />
                 <FAQ />

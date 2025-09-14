@@ -39,7 +39,7 @@ const LoginSignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-800 to-black px-4">
+    <div className="h-screen flex items-center justify-center bg-gradient-to-b from-purple-800 to-black px-4">
       <div className="bg-[#1f1b2e] text-white rounded-2xl shadow-lg w-full max-w-md p-8">
         
         {/* Heading */}

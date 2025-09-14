@@ -52,7 +52,7 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8">
-          {["Home", "Features", "Pricing", "FAQ", "MotivAI"].map((item) => (
+          {["Home", "Features", "Pricing", "FAQ","Test", "MotivAI"].map((item) => (
             <MotionLink
               key={item}
               to={`/${item.toLowerCase()}`}

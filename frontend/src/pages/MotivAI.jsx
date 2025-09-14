@@ -87,7 +87,7 @@ export default function MotivAI() {
   }, []);
 
   return (
-    <div className="max-w-5xl bg-amber-50  mx-auto h-[700px] bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-2xl overflow-hidden shadow-2xl border border-indigo-500/20">
+    <div className="max-w-5xl mt-5 bg-amber-50  mx-auto h-[700px] bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-2xl overflow-hidden shadow-2xl border border-indigo-500/20">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600/40 to-purple-600/40 backdrop-blur-sm p-6 border-b border-indigo-500/30">
         <div className="flex justify-between items-center">

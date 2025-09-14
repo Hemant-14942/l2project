@@ -27,7 +27,9 @@
     "react-media-recorder": "^1.7.1",
     "react-router-dom": "^7.7.0",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "zego-express-engine-webrtc": "^3.10.0",
+    "zego-superboard-web": "^2.20.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

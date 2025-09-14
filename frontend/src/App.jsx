@@ -16,11 +16,13 @@ import LoginSignupPage from './components/LoginSignupPage.jsx';
 import SummaryPlayer from './components/SummaryPlayer.jsx';
 import Quiz from "./components/Quiz.jsx";
 import FlashCards from "./components/FlashCards.jsx";
+import TestInstructions from './pages/TestInstructions.jsx';
+import TestSequence from './pages/TestSequence.jsx';
 
 function AppContent() {
   const location = useLocation();
   // const { hideNavbar } = useAuth();
-  const hideNavbarRoutes = ['/motivai','/login','/text','/youtube','/document','/voice'];
+  const hideNavbarRoutes = ['/motivai','/login','/text','/youtube','/document','/voice',"/TestSequence",'/TestInstructions'];
 
   const shouldHideNavbarByPath = hideNavbarRoutes.includes(location.pathname);
 
@@ -33,7 +35,7 @@ function AppContent() {
           <Navbar />
         </div>
       )}
-      <div className={!shouldHideNavbar ? "mt-23" : "mt-5"}>
+      <div className={!shouldHideNavbar ? "mt-23" : "mt-0"}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Navigate to="/" replace />} />
@@ -50,6 +52,10 @@ function AppContent() {
           <Route path="/SummaryPlayer" element={<SummaryPlayer />} />
           <Route path="/login" element={<LoginSignupPage />} />
           <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/testInstructions" element={<TestInstructions />} />
+          <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/test" element={<Navigate to="/testInstructions" replace />} />
+          <Route path="/testSequence" element={<TestSequence />} />
         </Routes>
       </div>
     </div>
