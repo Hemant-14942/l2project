@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -52,19 +53,28 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8">
-          {["Home", "Features", "Pricing", "FAQ","Test", "MotivAI"].map((item) => (
-            <MotionLink
-              key={item}
-              to={`/${item.toLowerCase()}`}
-              className="text-sm text-slate-200 hover:text-white transition-colors font-medium"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              {item}
-            </MotionLink>
-          ))}
+          {["Home", "Features", "FAQ", "Test", "MotivAI"].map((item) => {
+            let linkTarget;
+
+            if (item === "Home") linkTarget = "/";
+            else if (item === "Test") linkTarget = "/test";
+            else if (item === "MotivAI") linkTarget = "/motivai";
+            else linkTarget = `/#${item.toLowerCase()}`; // For FAQ & Test
+
+            return (
+              <HashLink
+                key={item}
+                to={linkTarget}
+                className="text-sm text-slate-200 hover:text-white transition-colors font-medium"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                {item}
+              </HashLink>
+            );
+          })}
         </nav>
 
         {/* Desktop CTA */}
@@ -75,23 +85,21 @@ const Navbar = () => {
           transition={{ duration: 0.3, delay: 0.2 }}
           whileHover={{ scale: 1.05 }}
         >
-          {
-          !isLoggedIn ?(
-          <Link
-            to="/login"
-            className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
-          >
-            Login
-          </Link>
-          ):(
-          <Link
-            onClick={handleLogout}
-            className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
-          >
-            Logout
-          </Link>
-          )
-          }
+          {!isLoggedIn ? (
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
+            >
+              Login
+            </Link>
+          ) : (
+            <Link
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-[#6D28D9] rounded-full hover:bg-[#A855F7] transition-colors"
+            >
+              Logout
+            </Link>
+          )}
         </motion.div>
 
         {/* Mobile Toggle */}

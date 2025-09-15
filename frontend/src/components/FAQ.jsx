@@ -25,7 +25,7 @@ function FAQItem({q,a}) {
 
 export default function FAQ() {
   return (
-    <section className="py-20 bg-gradient-to-b from-[#0B0F19] to-[#0D111F]" id="faq">
+    <section className="py-20 h-[75vh] bg-gradient-to-b from-[#0B0F19] to-[#0D111F]" id="faq">
       <div className="max-w-4xl mx-auto px-4 ">
         <h2 className="text-3xl font-bold text-gradient text-center mb-12">FAQ</h2>
         {/* <div className="flex w-full "> */}

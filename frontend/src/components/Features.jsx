@@ -40,7 +40,7 @@ const cardVariants = {
 
 const Features = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-[#0B0F19] to-[#0D111F]">
+    <section className="py-20 h-[90vh] bg-gradient-to-b from-[#0B0F19] to-[#0D111F]">
       <div className="max-w-7xl mx-auto px-6">
         {/* Heading */}
         <motion.div

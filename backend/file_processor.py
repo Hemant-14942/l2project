@@ -20,7 +20,7 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\\Program Files\\Tesseract-OCR\\tess
 
 class FileProcessor:
     def __init__(self):
-        elevenlabs_api_key ="sk_69d1a46194b03f856a41e8759001a7b848cbfed35ca92b46"
+        self.elevenlabs_api_key ="sk_69d1a46194b03f856a41e8759001a7b848cbfed35ca92b46"
         if not self.elevenlabs_api_key:
             raise ValueError("ELEVENLABS_API_KEY not found in environment")
 
