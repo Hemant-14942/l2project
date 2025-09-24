@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const FinalResult = ({ scores }) => {
+  const { user, dashscores, setDashScores } = useAuth();
+
   const scoreValues = Object.values(scores).filter((s) => s !== null);
   const average =
     scoreValues.reduce((acc, val) => acc + val, 0) / scoreValues.length;
+
+  // Save scores in context whenever they change
+  useEffect(() => {
+    if (scores) {
+      setDashScores(scores);
+    }
+  }, [scores, setDashScores]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-100 text-center">
@@ -34,11 +45,18 @@ const FinalResult = ({ scores }) => {
       <p className="text-gray-600 text-sm">
         This score gives an indication of overall attention and literacy skills.
       </p>
-        <a href="/">
-          <button className="mt-4 bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700">
-            Back to Home
-          </button>
-        </a>
+      <div className="flex items-center gap-13">
+      <Link href="/">
+        <button className="mt-4 bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700">
+          Back to Home
+        </button>
+      </Link>
+      <Link href="/dashboard">
+        <button className="mt-4 bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700">
+          Back to Home
+        </button>
+      </Link>
+      </div>
     </div>
   );
 };

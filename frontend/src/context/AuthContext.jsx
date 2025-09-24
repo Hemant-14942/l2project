@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [hideNavbar, setHideNavbar] = useState(false); // 👈 added for Navbar control
   const [basicSummary, setBasicSummary] = useState("");
+  const [dashscores, setDashScores] = useState({});
 
   // 🔐 Check auth on mount
   useEffect(() => {
@@ -48,7 +49,9 @@ export const AuthProvider = ({ children }) => {
     hideNavbar,
     setHideNavbar, 
     basicSummary,
-    setBasicSummary
+    setBasicSummary,
+    setDashScores,
+    dashscores,
   };
 
   return (
