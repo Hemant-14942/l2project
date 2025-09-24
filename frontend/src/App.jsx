@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
 import InputPage from './pages/InputPage';
+import Dashboard from './pages/Dashboard.jsx';
 import Summary from './pages/Summary.jsx';
 import TextForm from './components/TextForm.jsx';
 import YouTubeForm from './components/YouTubeForm.jsx';
@@ -11,7 +12,6 @@ import DocumentForm from './components/DocumentForm.jsx';
 import AIVoiceInput from './components/AIVoiceInput.jsx';
 import Chatbot from './components/ChatBot.jsx';
 import MotivAI from './pages/MotivAI.jsx';
-import { useAuth } from './context/AuthContext.jsx';
 import LoginSignupPage from './components/LoginSignupPage.jsx';
 import SummaryPlayer from './components/SummaryPlayer.jsx';
 import Quiz from "./components/Quiz.jsx";
@@ -21,7 +21,6 @@ import TestSequence from './pages/TestSequence.jsx';
 
 function AppContent() {
   const location = useLocation();
-  // const { hideNavbar } = useAuth();
   const hideNavbarRoutes = ['/motivai','/login','/text','/youtube','/document','/voice',"/TestSequence",'/TestInstructions'];
 
   const shouldHideNavbarByPath = hideNavbarRoutes.includes(location.pathname);
@@ -53,9 +52,11 @@ function AppContent() {
           <Route path="/login" element={<LoginSignupPage />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/testInstructions" element={<TestInstructions />} />
+          <Route path="/testSequence" element={<TestSequence />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/test" element={<Navigate to="/testInstructions" replace />} />
-          <Route path="/testSequence" element={<TestSequence />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+
         </Routes>
       </div>
     </div>
